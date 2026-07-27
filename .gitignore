@@ -1,0 +1,17 @@
+probe_output/
+timesheet_error.png
+timesheet_error_*.png
+__pycache__/
+*.pyc
+
+# Working Excel (local data)
+02-working/*.xlsx
+02-working/_pdf_images/
+03-archive/
+04-export/pdf/
+04-export/manifest.json
+04-export/workflow_state.json
+04-export/inbox_fetch_report.json
+
+# Legacy folder
+Documents/
