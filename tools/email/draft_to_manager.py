@@ -1,5 +1,5 @@
 """
-ขั้น 1: สร้าง Outlook draft ส่ง PDF ให้ Manager (Saifon) ลงนาม
+ขั้น 1: สร้าง Outlook draft ส่ง PDF ให้ Manager (คุณสายฝน นามกูล) ลงนาม
 
 - To: saifon.nam@tokiomarinelife.co.th เท่านั้น (ไม่มี CC)
 - แนบ PDF จาก 04-export/pdf/01-employee/
@@ -45,7 +45,7 @@ def resolve_pdf(*, month: str, year: int, pdf: Path | None) -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Create Outlook draft: PDF report → Manager (Saifon), no CC"
+        description="Create Outlook draft: PDF report → Manager (สายฝน นามกูล), no CC"
     )
     parser.add_argument("--month", required=True, help="Sheet name e.g. July")
     parser.add_argument("--year", type=int, default=DEFAULT_REPORT_YEAR)

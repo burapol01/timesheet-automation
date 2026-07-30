@@ -4,14 +4,16 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from email_config import MANAGER_NAME_TH, MANAGER_TITLE
+
 ROOT = Path(__file__).resolve().parent.parent
 
 PLACE_APPROVER_SIGNATURE = False
 
 REVIEW_LABEL = "Review by"
 APPROVE_LABEL = "Approve by"
-APPROVER_TITLE = "Manager - Fasttrack Development"
-APPROVER_NAME = "คุณอัจฉรา ชัยภูมิ"
+APPROVER_TITLE = MANAGER_TITLE
+APPROVER_NAME = MANAGER_NAME_TH
 APPROVER_ROLE = "Project Manager"
 EMPLOYEE_TITLE = "Programmer"
 EMPLOYEE_FILE_TAG = "Burapol"

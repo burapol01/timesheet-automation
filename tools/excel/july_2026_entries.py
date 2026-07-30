@@ -140,4 +140,11 @@ JULY_2026_ENTRIES: list[ReportEntry] = [
         "Analysis: AutoSending TA_FASTTRACK — review, fetch-only probe, local install runbook",
         "Review AutoSending (TA_FASTTRACK): BlockAs400Send + probe testtmldb3, ติดตั้ง dev, จำลองคิว/revert, runbook FTR knowledge, timesheet automation",
     ),
+    ReportEntry(
+        date(2026, 7, 30),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Development + Documentation: Backend analyzer cleanup (PremiumService/Startup, PR #8235), AS400 universe session handoff, dashboard devStartGuide และ dev-start checklist",
+        "Backend analyzer cleanup PremiumService/Startup (PR #8235), AS400 pure-C# flow handoff, four-system dashboard + devStartGuide, knowledge docs (Activation NO-GO, runtime OFF)",
+    ),
 ]

@@ -2,7 +2,7 @@ Email workflow (Outlook draft — ไม่ส่งอัตโนมัติ)
 
 === ลำดับชั้น PDF ===
 01-employee/              export จาก Excel
-02-manager/draft|signed/  draft → Saifon | รับกลับจาก Saifon
+02-manager/draft|signed/  draft → คุณสายฝน นามกูล | รับกลับจาก Manager
 03-approver/draft|signed/ draft → Achara | รับกลับจาก Achara
 04-accounting/draft|sent/ draft → IT-D | หลังส่งแล้ว
 
@@ -27,7 +27,7 @@ draft ครบ 3 role:
 
 | ขั้น | To | แนบจาก |
 |------|-----|--------|
-| manager | Saifon | 01-employee |
+| manager | สายฝน นามกูล | 01-employee |
 | approver | Achara | 02-manager/signed |
 | accounting | IT-D | 03-approver/signed |
 

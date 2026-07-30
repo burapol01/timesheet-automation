@@ -108,7 +108,7 @@ python tools/web/cleanup_duplicates.py
 | `02-working/report-data.xlsx` | openpyxl + sync | ข้อมูล + ส่งเว็บ |
 | `02-working/report-formatted.xlsx` | xlwings + sync | export PDF |
 | `04-export/pdf/01-employee/` | export_pdf | export เริ่มต้น |
-| `04-export/pdf/02-manager/signed/` | fetch_signed_replies | รับจาก Saifon |
+| `04-export/pdf/02-manager/signed/` | fetch_signed_replies | รับจาก คุณสายฝน นามกูล |
 | `04-export/pdf/03-approver/signed/` | fetch_signed_replies | รับจาก Achara |
 | `04-export/pdf/04-accounting/sent/` | (หลังส่ง IT-D) | เก็บหลังส่งแล้ว |
 

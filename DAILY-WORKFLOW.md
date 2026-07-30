@@ -125,5 +125,6 @@ python tools/email/draft_workflow.py --month July --step manager --open
 |-----|------------------|
 | **2026-07-24** | Agent submit error UX parity (FTR handoff + evidence) |
 | **2026-07-27** | AutoSending TA_FASTTRACK review + local install runbook ([doc](../Fast-track-revamp-engineering-knowledge/11-Data-Analysis/OneAndDone/legacy-analysis/analyses/autosending-windows-service/local-install-queue-simulation-runbook-20260727.md)) · timesheet automation |
+| **2026-07-30** | Backend analyzer cleanup PR #8235 · AS400 universe handoff · dashboard `#view=current-submission` devStartGuide · Manager คุณสายฝน นามกูล |
 
-> เมื่อพร้อม: บอกให้อัปเดต entry 2026-07-27 จากเอกสาร AutoSending review แล้วรัน submit
+> Manager - Fasttrack Development: **คุณสายฝน นามกูล** (`saifon.nam@tokiomarinelife.co.th`) · ยังไม่ส่ง mail วันนี้

@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
-# ขั้น 1: ส่ง PDF ให้ Manager ลงนาม (draft → Saifon)
+# ขั้น 1: ส่ง PDF ให้ Manager ลงนาม (draft → คุณสายฝน)
 MANAGER_EMAIL = "saifon.nam@tokiomarinelife.co.th"
-MANAGER_DISPLAY = "Saifon Namkool"
-MANAGER_GREETING = "Saifon"  # ชื่อไทย สายฝน — ใช้ชื่ออังกฤษในอีเมล
+MANAGER_NAME_TH = "คุณสายฝน นามกูล"
+MANAGER_TITLE = "Manager - Fasttrack Development"
+MANAGER_DISPLAY = "สายฝน นามกูล"
+MANAGER_GREETING = "คุณสายฝน"
 
 # ขั้น 2–3 (ยังไม่ใช้ใน draft แรก)
 APPROVER_EMAIL = "achara.cha@tokiomarinelife.co.th"

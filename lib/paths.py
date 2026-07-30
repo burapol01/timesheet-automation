@@ -4,7 +4,7 @@ Central file layout for timesheet-automation.
 PDF workflow (04-export/pdf/)
 -----------------------------
 01-employee/              export จาก Excel (ยังไม่ส่ง)
-02-manager/draft|signed/  draft → Saifon | รับกลับหลัง Saifon เซ็น
+02-manager/draft|signed/  draft → คุณสายฝน นามกูล | รับกลับหลัง Manager เซ็น
 03-approver/draft|signed/ draft → Achara | รับกลับหลัง Achara เซ็น
 04-accounting/draft|sent/ draft → IT-D | เก็บหลังส่งแล้ว
 """
