@@ -35,7 +35,8 @@ EMPLOYEE_SIG_LINE = "\n             ลงชื่อ .........................
 REVIEW_SIG_LINE = "\n             ลงชื่อ ..............................................."
 APPROVE_SIG_LINE = "\n             ลงชื่อ ..............................................."
 
-FOOTER_DATE_FONT_SIZE = 16.0
+FOOTER_FONT_SIZE = 14.0
+FOOTER_DATE_FONT_SIZE = 14.0
 FOOTER_DATE_ROW = 47
 
 # ตำแหน่งลายเซ็นพนักงาน (ยืนยัน manual report-formatted.xlsx Jul 2026)

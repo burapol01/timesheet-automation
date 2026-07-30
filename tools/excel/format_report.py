@@ -53,6 +53,7 @@ from report_footer import (  # noqa: E402
     EMPLOYEE_TITLE,
     FOOTER_DATE_FONT_SIZE,
     FOOTER_DATE_ROW,
+    FOOTER_FONT_SIZE,
     JANUARY_MASTER_APPROVER_NAME_CELL,
     JANUARY_MASTER_MANAGER_CELL,
     JANUARY_MASTER_TITLE_CELL,
@@ -95,6 +96,7 @@ FOOTER_SIG_ROW = 44
 FOOTER_NAME_ROW = 45
 FOOTER_TITLE_ROW = 46
 SIGNATURE_ROW_HEIGHT = 38.0
+FOOTER_TEXT_ROW_HEIGHT = 18.0
 MIN_WORK_ROW_HEIGHT = 23.3
 ROW_HEIGHT_PAD = 2.0
 AUTOFIT_TEMP_HEIGHT = 409.0
@@ -572,6 +574,17 @@ def _set_footer_font(cell, *, bold: bool | None = None, size: float | None = Non
         cell.api.Font.Size = size
 
 
+def _normalize_footer_fonts(tgt_sheet) -> None:
+    """คงขนาดฟอนต์ footer ให้เท่ากันทุกคอลัมน์ (14pt)."""
+    for addr in ("A45", "D45", "G45"):
+        _set_footer_font(tgt_sheet.range(addr), bold=False, size=FOOTER_FONT_SIZE)
+    for addr in ("A46", "D46", "G46"):
+        _set_footer_font(tgt_sheet.range(addr), bold=True, size=FOOTER_FONT_SIZE)
+    _set_footer_font(tgt_sheet.range("D47"), bold=True, size=FOOTER_DATE_FONT_SIZE)
+    for row in (FOOTER_NAME_ROW, FOOTER_TITLE_ROW, FOOTER_DATE_ROW):
+        tgt_sheet.range((row, 1)).row_height = FOOTER_TEXT_ROW_HEIGHT
+
+
 def sync_january_master(january_sheet) -> None:
     """January เก็บ master — F43=Manager, H43=Approver, A44=Programmer."""
     january_sheet.range(JANUARY_MASTER_MANAGER_CELL).value = MANAGER_FOOTER_NAME
@@ -649,12 +662,9 @@ def apply_signature_footer(ref_sheet, tgt_sheet, *, year: int, month: int) -> No
     mid_title.api.HorizontalAlignment = -4108
 
     tgt_sheet.range("G46").value = APPROVER_FOOTER_ROLE
-    _set_footer_font(tgt_sheet.range("G46"), bold=True)
-    _set_footer_font(tgt_sheet.range("A46"), bold=True)
 
     _apply_footer_date_row(tgt_sheet, date_str)
-
-    autofit_footer_rows(tgt_sheet, [FOOTER_NAME_ROW, FOOTER_TITLE_ROW, FOOTER_DATE_ROW])
+    _normalize_footer_fonts(tgt_sheet)
 
 
 def _apply_footer_date_row(tgt_sheet, date_str: str) -> None:
@@ -669,7 +679,6 @@ def _apply_footer_date_row(tgt_sheet, date_str: str) -> None:
     mid_date.merge()
     mid_date.value = date_str
     mid_date.api.HorizontalAlignment = -4108
-    _set_footer_font(mid_date, bold=True, size=FOOTER_DATE_FONT_SIZE)
 
 
 def copy_footer_layout(ref_sheet, tgt_sheet, summary_row: int) -> None:
@@ -809,7 +818,6 @@ def format_month_sheet(
         copy_footer_layout(ref, tgt, summary_row)
         apply_signature_footer(ref, tgt, year=year, month=month)
         ensure_shapes(ref, tgt)
-        autofit_footer_rows(tgt, [FOOTER_NAME_ROW, FOOTER_TITLE_ROW, FOOTER_DATE_ROW])
         tgt.range((FOOTER_SIG_ROW, 1)).row_height = SIGNATURE_ROW_HEIGHT
         # ปรับความสูงแถวงานอีกครั้งหลัง footer/shapes (กันถูก template ทับ)
         apply_text_layout(tgt, work_rows)
