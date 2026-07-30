@@ -11,6 +11,7 @@ MANAGER_GREETING = "คุณสายฝน"
 
 # ขั้น 2–3 (ยังไม่ใช้ใน draft แรก)
 APPROVER_EMAIL = "achara.cha@tokiomarinelife.co.th"
+APPROVER_NAME_TH = "คุณอัจฉรา ชัยภูมิ"
 APPROVER_DISPLAY = "Achara Chaipoom"
 ACCOUNTING_TO = "accounting@it-d.biz"
 ACCOUNTING_CC = "ar@it-d.biz"

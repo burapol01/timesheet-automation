@@ -76,7 +76,7 @@ def sync_workbook(
         ref = wb.sheets[reference_month]
 
         sync_january_master(wb.sheets["January"])
-        print("  restored January master (F43, A44)")
+        print("  restored January master (F43=Manager, H43=Approver, A44=title)")
 
         # Bootstrap footer format บนชีตอ้างอิงก่อน
         ref_year, ref_month = month_year_for_sheet(reference_month, year)

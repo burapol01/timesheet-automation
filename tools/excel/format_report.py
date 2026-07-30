@@ -47,14 +47,17 @@ from paths import (  # noqa: E402
 from report_footer import (  # noqa: E402
     APPROVE_LABEL,
     APPROVE_SIG_LINE,
-    APPROVER_NAME,
-    APPROVER_ROLE,
-    APPROVER_TITLE,
+    APPROVER_FOOTER_NAME,
+    APPROVER_FOOTER_ROLE,
     EMPLOYEE_SIG_LINE,
     EMPLOYEE_TITLE,
     FOOTER_DATE_FONT_SIZE,
-    JANUARY_MASTER_APPROVER_CELL,
+    FOOTER_DATE_ROW,
+    JANUARY_MASTER_APPROVER_NAME_CELL,
+    JANUARY_MASTER_MANAGER_CELL,
     JANUARY_MASTER_TITLE_CELL,
+    MANAGER_FOOTER_NAME,
+    MANAGER_FOOTER_TITLE,
     REVIEW_LABEL_CELL,
     REVIEW_SIG_LINE,
     SIGNATURE_ANCHOR_ROW,
@@ -570,13 +573,14 @@ def _set_footer_font(cell, *, bold: bool | None = None, size: float | None = Non
 
 
 def sync_january_master(january_sheet) -> None:
-    """January เก็บ master — F43=ชื่อ approver, A44=Programmer (อ้างอิงทุกเดือน)."""
-    january_sheet.range(JANUARY_MASTER_APPROVER_CELL).value = APPROVER_NAME
+    """January เก็บ master — F43=Manager, H43=Approver, A44=Programmer."""
+    january_sheet.range(JANUARY_MASTER_MANAGER_CELL).value = MANAGER_FOOTER_NAME
+    january_sheet.range(JANUARY_MASTER_APPROVER_NAME_CELL).value = APPROVER_FOOTER_NAME
     january_sheet.range(JANUARY_MASTER_TITLE_CELL).value = EMPLOYEE_TITLE
 
 
 def apply_signature_footer(ref_sheet, tgt_sheet, *, year: int, month: int) -> None:
-    """3 คอลัมน์ลายเซ็น — ตาม manual report-formatted.xlsx."""
+    """3 คอลัมน์ลายเซ็น — แถว 45=ชื่อ, 46=ตำแหน่ง, 47=วันที่ (Review)."""
     if tgt_sheet.name == "January":
         sync_january_master(tgt_sheet)
         return
@@ -586,7 +590,7 @@ def apply_signature_footer(ref_sheet, tgt_sheet, *, year: int, month: int) -> No
 
     copy_formats(ref_sheet.range("A43:G47"), tgt_sheet.range("A43:G47"))
 
-    for addr in ("A44:C44", "D44:E44", "F44:G44", "F45:G45", "F46:G46"):
+    for addr in ("A44:C44", "D44:E44", "D45:E45", "D46:E46", "D47:E47", "A45:B45", "A46:B46"):
         try:
             tgt_sheet.range(addr).unmerge()
         except Exception:
@@ -608,14 +612,14 @@ def apply_signature_footer(ref_sheet, tgt_sheet, *, year: int, month: int) -> No
     left_sig.value = EMPLOYEE_SIG_LINE
     left_sig.api.WrapText = True
     left_sig.api.VerticalAlignment = XL_TOP
-    left_sig.api.HorizontalAlignment = -4131
+    left_sig.api.HorizontalAlignment = -4108
 
-    mid_sig = tgt_sheet.range("D44")
+    mid_sig = tgt_sheet.range("D44:E44")
+    mid_sig.merge()
     mid_sig.value = REVIEW_SIG_LINE
     mid_sig.api.WrapText = True
     mid_sig.api.VerticalAlignment = XL_TOP
     mid_sig.api.HorizontalAlignment = -4108
-    tgt_sheet.range("E44").clear_contents()
 
     right_sig = tgt_sheet.range("G44")
     right_sig.value = APPROVE_SIG_LINE
@@ -630,38 +634,42 @@ def apply_signature_footer(ref_sheet, tgt_sheet, *, year: int, month: int) -> No
 
     mid_name = tgt_sheet.range("D45:E45")
     mid_name.merge()
-    mid_name.value = APPROVER_TITLE
+    mid_name.formula = f"=January!${JANUARY_MASTER_MANAGER_CELL}"
     mid_name.api.HorizontalAlignment = -4108
 
-    tgt_sheet.range("G45").formula = "=January!F43"
+    tgt_sheet.range("G45").formula = f"=January!${JANUARY_MASTER_APPROVER_NAME_CELL}"
+    tgt_sheet.range("G45").api.HorizontalAlignment = -4108
 
     tgt_sheet.range("A46:B46").merge()
     tgt_sheet.range("A46").formula = "=January!$A$44"
 
-    mid_date = tgt_sheet.range("D46:E46")
-    mid_date.merge()
-    mid_date.value = date_str
-    mid_date.api.HorizontalAlignment = -4108
-    _set_footer_font(mid_date, bold=True, size=FOOTER_DATE_FONT_SIZE)
+    mid_title = tgt_sheet.range("D46:E46")
+    mid_title.merge()
+    mid_title.value = MANAGER_FOOTER_TITLE
+    mid_title.api.HorizontalAlignment = -4108
 
-    tgt_sheet.range("G46").value = APPROVER_ROLE
+    tgt_sheet.range("G46").value = APPROVER_FOOTER_ROLE
     _set_footer_font(tgt_sheet.range("G46"), bold=True)
     _set_footer_font(tgt_sheet.range("A46"), bold=True)
 
-    _clear_footer_row_47(tgt_sheet)
+    _apply_footer_date_row(tgt_sheet, date_str)
+
+    autofit_footer_rows(tgt_sheet, [FOOTER_NAME_ROW, FOOTER_TITLE_ROW, FOOTER_DATE_ROW])
 
 
-def _clear_footer_row_47(tgt_sheet) -> None:
-    for addr in ("A47:B47", "B47:C47", "D47:E47", "F47:G47"):
+def _apply_footer_date_row(tgt_sheet, date_str: str) -> None:
+    for addr in ("A47:B47", "F47:G47"):
         try:
             tgt_sheet.range(addr).unmerge()
         except Exception:
             pass
     tgt_sheet.range("A47:G47").value = None
-    try:
-        tgt_sheet.range("D47:E47").merge()
-    except Exception:
-        pass
+
+    mid_date = tgt_sheet.range("D47:E47")
+    mid_date.merge()
+    mid_date.value = date_str
+    mid_date.api.HorizontalAlignment = -4108
+    _set_footer_font(mid_date, bold=True, size=FOOTER_DATE_FONT_SIZE)
 
 
 def copy_footer_layout(ref_sheet, tgt_sheet, summary_row: int) -> None:
@@ -801,7 +809,7 @@ def format_month_sheet(
         copy_footer_layout(ref, tgt, summary_row)
         apply_signature_footer(ref, tgt, year=year, month=month)
         ensure_shapes(ref, tgt)
-        autofit_footer_rows(tgt, [FOOTER_NAME_ROW, FOOTER_TITLE_ROW])
+        autofit_footer_rows(tgt, [FOOTER_NAME_ROW, FOOTER_TITLE_ROW, FOOTER_DATE_ROW])
         tgt.range((FOOTER_SIG_ROW, 1)).row_height = SIGNATURE_ROW_HEIGHT
         # ปรับความสูงแถวงานอีกครั้งหลัง footer/shapes (กันถูก template ทับ)
         apply_text_layout(tgt, work_rows)
