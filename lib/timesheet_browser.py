@@ -71,19 +71,16 @@ class CalendarSession:
     def open_logging_modal(self, target: date) -> None:
         self.ensure_month(target)
         iso = target.isoformat()
-        clicked = self.page.evaluate(
-            """(iso) => {
-                const cell =
-                    document.querySelector(`.fc-bg td.fc-day[data-date="${iso}"]`) ||
-                    document.querySelector(`td.fc-day[data-date="${iso}"]`);
-                if (!cell) return false;
-                cell.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
-                return true;
-            }""",
-            iso,
-        )
-        if not clicked:
-            raise RuntimeError(f"Calendar cell not found for {iso}")
+        cell = self.page.locator(f'[data-date="{iso}"]').first
+        if cell.count():
+            cell.click(force=True)
+        else:
+            day = self.page.locator(
+                ".fc-daygrid-day:not(.fc-day-other) .fc-daygrid-day-number"
+            ).filter(has_text=str(target.day)).first
+            if not day.count():
+                raise RuntimeError(f"Calendar cell not found for {iso}")
+            day.click()
         self.page.wait_for_selector(".modal.in, .modal.show", state="visible", timeout=10_000)
         self.page.wait_for_selector(f".modal-title:has-text('{MODAL_TITLE}')", timeout=10_000)
 
