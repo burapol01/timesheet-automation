@@ -53,6 +53,7 @@ from report_footer import (  # noqa: E402
     EMPLOYEE_TITLE,
     FOOTER_DATE_FONT_SIZE,
     FOOTER_DATE_ROW,
+    FOOTER_FONT_NAME,
     FOOTER_FONT_SIZE,
     JANUARY_MASTER_APPROVER_NAME_CELL,
     JANUARY_MASTER_MANAGER_CELL,
@@ -567,7 +568,15 @@ def _copy_cell_from_ref(
         tgt.value = ref.value
 
 
-def _set_footer_font(cell, *, bold: bool | None = None, size: float | None = None) -> None:
+def _set_footer_font(
+    cell,
+    *,
+    bold: bool | None = None,
+    size: float | None = None,
+    name: str | None = None,
+) -> None:
+    if name is not None:
+        cell.api.Font.Name = name
     if bold is not None:
         cell.api.Font.Bold = bold
     if size is not None:
@@ -575,12 +584,23 @@ def _set_footer_font(cell, *, bold: bool | None = None, size: float | None = Non
 
 
 def _normalize_footer_fonts(tgt_sheet) -> None:
-    """คงขนาดฟอนต์ footer ให้เท่ากันทุกคอลัมน์ (14pt)."""
-    for addr in ("A45", "D45", "G45"):
-        _set_footer_font(tgt_sheet.range(addr), bold=False, size=FOOTER_FONT_SIZE)
+    """คงฟอนต์ footer — Angsana New 14pt; วันที่ไม่หนา."""
+    footer_cells = (
+        "A43", "D43", "G43",
+        "A44", "D44", "G44",
+        "A45", "D45", "G45",
+        "A46", "D46", "G46",
+        "D47",
+    )
+    for addr in footer_cells:
+        _set_footer_font(
+            tgt_sheet.range(addr),
+            name=FOOTER_FONT_NAME,
+            size=FOOTER_FONT_SIZE,
+            bold=False,
+        )
     for addr in ("A46", "D46", "G46"):
-        _set_footer_font(tgt_sheet.range(addr), bold=True, size=FOOTER_FONT_SIZE)
-    _set_footer_font(tgt_sheet.range("D47"), bold=True, size=FOOTER_DATE_FONT_SIZE)
+        _set_footer_font(tgt_sheet.range(addr), bold=True)
     for row in (FOOTER_NAME_ROW, FOOTER_TITLE_ROW, FOOTER_DATE_ROW):
         tgt_sheet.range((row, 1)).row_height = FOOTER_TEXT_ROW_HEIGHT
 

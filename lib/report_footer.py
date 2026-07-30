@@ -35,6 +35,7 @@ EMPLOYEE_SIG_LINE = "\n             ลงชื่อ .........................
 REVIEW_SIG_LINE = "\n             ลงชื่อ ..............................................."
 APPROVE_SIG_LINE = "\n             ลงชื่อ ..............................................."
 
+FOOTER_FONT_NAME = "Angsana New"
 FOOTER_FONT_SIZE = 14.0
 FOOTER_DATE_FONT_SIZE = 14.0
 FOOTER_DATE_ROW = 47
