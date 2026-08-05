@@ -83,3 +83,19 @@ def body_to_accounting(*, month_en: str, year: int) -> str:
         f"ขอบคุณครับ\r\n"
         f"{SENDER_NAME_TH}"
     )
+
+
+def body_to_accounting_interim(*, month_en: str, year: int) -> str:
+    """Draft ชั่วคราว — แนบ PDF ที่ Manager ลงนามแล้ว รอ Approver ครบจะส่งอีกครั้ง."""
+    month_th = thai_month(month_en)
+    year_be = buddhist_year(year)
+    return (
+        f"เรียน ทีมบัญชี IT-D\r\n"
+        f"ผมขอนำส่งรายงานการปฏิบัติงานประจำเดือน{month_th} {year_be} "
+        f"เป็น draft ชั่วคราวตามไฟล์แนบครับ\r\n"
+        f"ไฟล์นี้ลงนามโดยคุณสายฝน (Manager) แล้ว "
+        f"แต่ยังรอลายเซ็น Approver ให้ครบถ้วน\r\n"
+        f"เมื่อได้ไฟล์ที่ลงนามครบแล้ว จะส่งให้อีกครั้งภายหลังครับ\r\n"
+        f"ขอบคุณครับ\r\n"
+        f"{SENDER_NAME_TH}"
+    )

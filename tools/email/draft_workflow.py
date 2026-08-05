@@ -56,6 +56,8 @@ from email_templates import (  # noqa: E402
 
     body_to_accounting,
 
+    body_to_accounting_interim,
+
     body_to_approver,
 
     subject_manager_review,
@@ -254,6 +256,8 @@ def build_drafts(
 
     attachments: dict[str, Path],
 
+    interim_accounting: bool = False,
+
 ) -> list[tuple[str, DraftMail]]:
 
     subject_mgr = subject_manager_review(month_en=month, year=year)
@@ -304,15 +308,13 @@ def build_drafts(
 
                     to=APPROVER_EMAIL,
 
-                    cc=_format_recipient(MANAGER_EMAIL, MANAGER_DISPLAY),
+                    cc=MANAGER_EMAIL,
 
                     subject=subject_to_approver(month_en=month, year=year),
 
                     body=body_to_approver(month_en=month, year=year),
 
                     attachments=[attachments["approver"]],
-
-                    display_to=APPROVER_DISPLAY,
 
                 ),
 
@@ -324,39 +326,59 @@ def build_drafts(
 
     if "accounting" in steps:
 
-        cc_parts = [
+        if interim_accounting:
 
-            _format_recipient(APPROVER_EMAIL, APPROVER_DISPLAY),
+            drafts.append(
 
-            _format_recipient(MANAGER_EMAIL, MANAGER_DISPLAY),
+                (
 
-            ACCOUNTING_CC,
+                    "accounting",
 
-        ]
+                    DraftMail(
 
-        drafts.append(
+                        to=ACCOUNTING_TO,
 
-            (
+                        cc="",
 
-                "accounting",
+                        subject=subject_to_accounting(month_en=month, year=year),
 
-                DraftMail(
+                        body=body_to_accounting_interim(month_en=month, year=year),
 
-                    to=ACCOUNTING_TO,
+                        attachments=[attachments["accounting"]],
 
-                    cc="; ".join(cc_parts),
+                    ),
 
-                    subject=subject_to_accounting(month_en=month, year=year),
-
-                    body=body_to_accounting(month_en=month, year=year),
-
-                    attachments=[attachments["accounting"]],
-
-                ),
+                )
 
             )
 
-        )
+        else:
+
+            cc_parts = [APPROVER_EMAIL, MANAGER_EMAIL, ACCOUNTING_CC]
+
+            drafts.append(
+
+                (
+
+                    "accounting",
+
+                    DraftMail(
+
+                        to=ACCOUNTING_TO,
+
+                        cc="; ".join(cc_parts),
+
+                        subject=subject_to_accounting(month_en=month, year=year),
+
+                        body=body_to_accounting(month_en=month, year=year),
+
+                        attachments=[attachments["accounting"]],
+
+                    ),
+
+                )
+
+            )
 
 
 
@@ -408,6 +430,16 @@ def main() -> None:
 
     )
 
+    parser.add_argument(
+
+        "--interim-accounting",
+
+        action="store_true",
+
+        help="Draft ชั่วคราวไป accounting — แนบ PDF ที่ Manager ลงนามแล้ว (รอ Approver ครบ)",
+
+    )
+
     parser.add_argument("--dry-run", action="store_true")
 
     parser.add_argument("--open", action="store_true", help="เปิด draft สุดท้ายใน Outlook")
@@ -423,6 +455,10 @@ def main() -> None:
 
 
     for step in steps:
+
+        if step == "accounting" and args.interim_accounting:
+
+            continue
 
         if step in ("approver", "accounting"):
 
@@ -453,6 +489,18 @@ def main() -> None:
         elif step in ("approver", "accounting") and args.signed_pdf:
 
             override = args.signed_pdf
+
+        elif step == "accounting" and args.interim_accounting:
+
+            override = pdf_output_path(
+
+                month=args.month,
+
+                year=args.year,
+
+                stage=PDF_STAGE_MANAGER_SIGNED,
+
+            )
 
         src = resolve_pdf_for_step(
 
@@ -489,6 +537,8 @@ def main() -> None:
         steps=steps,
 
         attachments=attachments,
+
+        interim_accounting=args.interim_accounting,
 
     )
 
