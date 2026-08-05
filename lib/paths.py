@@ -37,9 +37,12 @@ PDF_SIGNED_DIR = PDF_APPROVER_DIR / SUB_SIGNED
 PDF_SENT_DIR = PDF_ACCOUNTING_DIR / SUB_SENT
 
 ORIGINAL_TEMPLATE = ORIGINAL_DIR / "project-report-template.xlsx"
+# แม่แบบ layout ยืนยัน manual (ชีต July) — ห้าม script เขียนทับ
+LAYOUT_MASTER_WORKBOOK = ORIGINAL_DIR / "report-layout-master.xlsx"
 WORKING_DATA = WORKING_DIR / "report-data.xlsx"
 WORKING_FORMATTED = WORKING_DIR / "report-formatted.xlsx"
-FORMAT_REFERENCE_SHEET = "June"
+FORMAT_REFERENCE_SHEET = "July"
+LAYOUT_REFERENCE_DAYS = 31  # July — แถว summary/footer อ้างอิง
 
 MONTH_SHEETS = (
     "January",

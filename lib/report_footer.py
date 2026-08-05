@@ -38,11 +38,15 @@ APPROVE_SIG_LINE = "\n             ลงชื่อ ..........................
 FOOTER_FONT_NAME = "Angsana New"
 FOOTER_FONT_SIZE = 14.0
 FOOTER_DATE_FONT_SIZE = 14.0
-FOOTER_DATE_ROW = 47
+# แถว footer ตาม report-layout-master.xlsx (July) — ห้าม offset เอง
+FOOTER_BLOCK_FIRST_ROW = 42
+FOOTER_BLOCK_LAST_ROW = 48
+FOOTER_DATE_ROW = 48
+FOOTER_DATE_COLUMNS = (1, 4, 7)  # A, D, G
 
-# ตำแหน่งลายเซ็นพนักงาน (ยืนยัน manual report-formatted.xlsx Jul 2026)
-SIGNATURE_ANCHOR_ROW = 42
-SIGNATURE_TOP_OFFSET = 25.44
-SIGNATURE_LEFT = 55.30
-SIGNATURE_WIDTH = 122.84
-SIGNATURE_HEIGHT = 55.39
+# ขนาดรูปลายเซ็นพนักงาน (Picture 1) จาก report-layout-master.xlsx July
+SIGNATURE_WIDTH = 124.39
+SIGNATURE_HEIGHT = 53.65
+
+# แถวว่างใต้ label ก่อน "ลงชื่อ" — วางรูปลายเซ็นพนักงาน
+SIGNATURE_ANCHOR_ROW = 44

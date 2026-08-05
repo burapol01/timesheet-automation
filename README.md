@@ -53,19 +53,22 @@ python tools/excel/write_month_data.py --month July
 python tools/excel/verify_holidays.py --month July --year 2026
 ```
 
-### 3) จัด format ให้เหมือน template + คืนโลโก้/ลายเซ็น (xlwings → report-formatted.xlsx)
+### 3) จัด format รายเดือน (xlwings → report-formatted.xlsx)
+
+**แม่แบบถาวร:** `01-original/report-layout-master.xlsx` ชีต July (ห้าม script เขียนทับ)
 
 ```powershell
-python tools/excel/format_report.py --month July
+python tools/excel/format_report.py --month August
 ```
 
-### 3b) Sync layout ยืนยันเข้า template / ไฟล์ทำงานทุกเดือน
+- เปิด `report-formatted.xlsx` แตะเฉพาะชีตเป้าหมาย — **July ไม่ถูก format**
+- Footer/ลายเซ็น **copy ทั้ง block แถว 42–48** จาก master — เปลี่ยนแค่วันที่
+
+### 3b) Sync layout master → template / data (ไม่รวม July master)
 
 ```powershell
 python tools/excel/sync_template_layout.py --target all
 ```
-
-ใช้หลังยืนยัน footer/summary ใน `report-formatted.xlsx` แล้ว — อัปเดต `01-original/` และชีต Jan/Jun–Dec ที่เหลือ
 
 ### 4) Export PDF (xlwings → 04-export/)
 

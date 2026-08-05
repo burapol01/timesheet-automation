@@ -1,10 +1,7 @@
 """
-Sync layout ยืนยัน (summary + footer + logo/ลายเซ็น) เข้า template และไฟล์ทำงาน
+Sync layout จาก report-layout-master.xlsx (ชีต July) เข้า template / ไฟล์ทำงาน
 
-ใช้หลังยืนยัน layout ใน report-formatted.xlsx แล้วต้องการอัปเดต:
-- 01-original/project-report-template.xlsx
-- 02-working/report-data.xlsx
-- 02-working/report-formatted.xlsx
+ห้าม sync เข้า report-layout-master.xlsx — ไฟล์นั้นเป็นแม่แบบ read-only
 """
 
 from __future__ import annotations
@@ -23,16 +20,17 @@ sys.path.insert(0, str(ROOT / "lib"))
 sys.path.insert(0, str(ROOT / "tools" / "excel"))
 
 from format_report import (  # noqa: E402
-    apply_signature_footer,
     apply_template_structure,
     clear_readonly,
     month_year_for_sheet,
+    open_layout_reference,
     sync_january_master,
 )
 from paths import (  # noqa: E402
     ARCHIVE_DIR,
     DEFAULT_REPORT_YEAR,
     FORMAT_REFERENCE_SHEET,
+    LAYOUT_MASTER_WORKBOOK,
     MONTH_SHEETS,
     ORIGINAL_TEMPLATE,
     WORKING_DATA,
@@ -54,12 +52,16 @@ def archive_file(path: Path) -> Path:
 def sync_workbook(
     path: Path,
     *,
-    reference_month: str = FORMAT_REFERENCE_SHEET,
     year: int = DEFAULT_REPORT_YEAR,
     archive: bool = True,
 ) -> None:
+    if path.resolve() == LAYOUT_MASTER_WORKBOOK.resolve():
+        print(f"  skip layout master (read-only): {path.name}")
+        return
     if not path.exists():
         raise FileNotFoundError(f"ไม่พบไฟล์: {path}")
+    if not LAYOUT_MASTER_WORKBOOK.exists():
+        raise FileNotFoundError(f"ไม่พบ layout master: {LAYOUT_MASTER_WORKBOOK}")
 
     if archive:
         archive_file(path)
@@ -67,31 +69,27 @@ def sync_workbook(
     clear_readonly(path)
 
     app = xw.App(visible=False, add_book=False)
+    master_wb = None
     try:
+        ref, master_wb = open_layout_reference(app)
         wb = app.books.open(str(path.resolve()))
         sheet_names = [s.name for s in wb.sheets]
-        if reference_month not in sheet_names:
-            raise ValueError(f"ไม่พบชีตอ้างอิง: {reference_month}")
 
-        ref = wb.sheets[reference_month]
-
-        sync_january_master(wb.sheets["January"])
-        print("  restored January master (F43=Manager, H43=Approver, A44=title)")
-
-        # Bootstrap footer format บนชีตอ้างอิงก่อน
-        ref_year, ref_month = month_year_for_sheet(reference_month, year)
-        apply_signature_footer(ref, ref, year=ref_year, month=ref_month)
-        print(f"  bootstrapped footer on {reference_month}")
+        if "January" in sheet_names:
+            sync_january_master(wb.sheets["January"])
+            print("  restored January master (F43=Manager, H43=Approver, A44=title)")
 
         for sheet_name in MONTH_SHEETS:
             if sheet_name not in sheet_names:
                 print(f"  skip {sheet_name} (no sheet)")
                 continue
-            tgt = wb.sheets[sheet_name]
+            if sheet_name == FORMAT_REFERENCE_SHEET:
+                print(f"  skip {sheet_name} (layout master sheet)")
+                continue
             sheet_year, sheet_month = month_year_for_sheet(sheet_name, year)
             apply_template_structure(
                 ref,
-                tgt,
+                wb.sheets[sheet_name],
                 year=sheet_year,
                 month=sheet_month,
             )
@@ -100,25 +98,22 @@ def sync_workbook(
         wb.save()
         wb.close()
     finally:
+        if master_wb is not None:
+            master_wb.close()
         app.quit()
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Sync confirmed report layout to original template and working files"
+        description="Sync layout from report-layout-master.xlsx (July) to working/template files"
     )
     parser.add_argument(
         "--target",
         choices=("original", "working", "all"),
         default="all",
-        help="original=01-original, working=data+formatted, all=everything",
+        help="original=project-report-template, working=data+formatted",
     )
     parser.add_argument("--year", type=int, default=DEFAULT_REPORT_YEAR)
-    parser.add_argument(
-        "--reference",
-        default=FORMAT_REFERENCE_SHEET,
-        help="Reference sheet for layout (default: June)",
-    )
     parser.add_argument(
         "--no-archive",
         action="store_true",
@@ -137,12 +132,7 @@ def main() -> None:
             print(f"skip missing: {path}")
             continue
         print(f"Syncing {path} ...")
-        sync_workbook(
-            path,
-            reference_month=args.reference,
-            year=args.year,
-            archive=not args.no_archive,
-        )
+        sync_workbook(path, year=args.year, archive=not args.no_archive)
 
     print("Done.")
 

@@ -37,35 +37,26 @@ from paths import (  # noqa: E402
     ARCHIVE_DIR,
     DEFAULT_REPORT_YEAR,
     FORMAT_REFERENCE_SHEET,
+    LAYOUT_MASTER_WORKBOOK,
+    LAYOUT_REFERENCE_DAYS,
     MONTH_SHEETS,
-    ORIGINAL_TEMPLATE,
     WORKING_DATA,
     WORKING_FORMATTED,
-    assert_original_readonly,
     ensure_dirs,
 )
 from report_footer import (  # noqa: E402
-    APPROVE_LABEL,
-    APPROVE_SIG_LINE,
     APPROVER_FOOTER_NAME,
-    APPROVER_FOOTER_ROLE,
-    EMPLOYEE_SIG_LINE,
     EMPLOYEE_TITLE,
-    FOOTER_DATE_FONT_SIZE,
+    FOOTER_BLOCK_FIRST_ROW,
+    FOOTER_BLOCK_LAST_ROW,
+    FOOTER_DATE_COLUMNS,
     FOOTER_DATE_ROW,
-    FOOTER_FONT_NAME,
-    FOOTER_FONT_SIZE,
     JANUARY_MASTER_APPROVER_NAME_CELL,
     JANUARY_MASTER_MANAGER_CELL,
     JANUARY_MASTER_TITLE_CELL,
     MANAGER_FOOTER_NAME,
-    MANAGER_FOOTER_TITLE,
-    REVIEW_LABEL_CELL,
-    REVIEW_SIG_LINE,
     SIGNATURE_ANCHOR_ROW,
     SIGNATURE_HEIGHT,
-    SIGNATURE_LEFT,
-    SIGNATURE_TOP_OFFSET,
     SIGNATURE_WIDTH,
 )
 
@@ -73,8 +64,8 @@ FILL_YELLOW = 13434879
 FILL_WHITE = 16777215
 XL_TOP = -4160
 XL_CENTER = -4108
-HOLIDAY_SAMPLE_ROW = 14  # June แถว วันอาทิตย์ — ความสูง/ format อ้างอิง
-WORK_ROW_SAMPLE = 9  # June แถวงานตัวอย่าง — ความสูงเมื่อ remark 2+ บรรทัด
+HOLIDAY_SAMPLE_ROW = 14  # fallback — ใช้ holiday_sample_row() จาก July master ก่อน
+WORK_ROW_SAMPLE = 9  # fallback — ใช้ work_row_sample() จาก July master ก่อน
 
 HEADER_LABELS = (
     "วันที่",
@@ -101,6 +92,97 @@ FOOTER_TEXT_ROW_HEIGHT = 18.0
 MIN_WORK_ROW_HEIGHT = 23.3
 ROW_HEIGHT_PAD = 2.0
 AUTOFIT_TEMP_HEIGHT = 409.0
+
+
+def summary_row_for_days(days_in_month: int) -> int:
+    return HEADER_ROW + days_in_month + 2
+
+
+def ref_summary_row() -> int:
+    """แถวสรุปบนชีต July master (31 วัน)."""
+    return summary_row_for_days(LAYOUT_REFERENCE_DAYS)
+
+
+def work_row_sample(ref_sheet) -> int:
+    """แถวงานตัวอย่างจาก July master — ใช้ copy format แถวข้อมูล."""
+    last = HEADER_ROW + LAYOUT_REFERENCE_DAYS
+    for row in range(HEADER_ROW + 1, last + 1):
+        detail = ref_sheet.range((row, COL_DETAIL)).value
+        job = ref_sheet.range((row, COL_JOB_CODE)).value
+        if detail and job:
+            return row
+    return WORK_ROW_SAMPLE
+
+
+def open_layout_reference(app: xw.App):
+    """เปิด report-layout-master.xlsx (read-only) — ห้ามเขียนทับไฟล์นี้."""
+    master_path = LAYOUT_MASTER_WORKBOOK.resolve()
+    if not master_path.exists():
+        raise FileNotFoundError(
+            f"ไม่พบ layout master: {master_path}\n"
+            "วาง report-layout-master.xlsx ใน 01-original/"
+        )
+    master_wb = app.books.open(str(master_path), read_only=True)
+    return master_wb.sheets[FORMAT_REFERENCE_SHEET], master_wb
+
+
+def paste_range_all(ref_sheet, tgt_sheet, ref_addr: str, tgt_addr: str | None = None) -> None:
+    tgt_addr = tgt_addr or ref_addr
+    ref_sheet.range(ref_addr).copy()
+    tgt_sheet.range(tgt_addr).paste(paste="all")
+    ref_sheet.book.api.Application.CutCopyMode = False
+
+
+def align_data_area_to_master(ref_sheet, tgt_sheet) -> None:
+    """คงความสูงแถว 8..41 จาก master ทุกแถว — ห้าม autofit ดัน footer."""
+    for row in range(HEADER_ROW + 1, FOOTER_BLOCK_FIRST_ROW):
+        h = ref_sheet.range((row, 1)).row_height
+        if h:
+            tgt_sheet.range((row, 1)).row_height = h
+
+
+def copy_master_footer_block(
+    ref_sheet,
+    tgt_sheet,
+    *,
+    year: int,
+    month: int,
+    last_data_row: int,
+    summary_row: int,
+) -> None:
+    """Copy summary+footer จาก July master ทั้ง block — เปลี่ยนแค่สูตรสรุปและวันที่."""
+    ref_summary = ref_summary_row()
+
+    copy_formats(
+        ref_sheet.range(f"A{ref_summary}:G{ref_summary + 1}"),
+        tgt_sheet.range(f"A{summary_row}:G{summary_row + 1}"),
+    )
+    for offset in range(2):
+        for col in (2, 4):
+            tgt_sheet.range((summary_row + offset, col)).value = ref_sheet.range(
+                (ref_summary + offset, col)
+            ).value
+    apply_summary_formulas(tgt_sheet, last_data_row, summary_row)
+
+    paste_range_all(
+        ref_sheet,
+        tgt_sheet,
+        f"A{FOOTER_BLOCK_FIRST_ROW}:G{FOOTER_BLOCK_LAST_ROW}",
+    )
+
+    date_str = date(year, month, calendar.monthrange(year, month)[1]).strftime("%d/%m/%Y")
+    for col in FOOTER_DATE_COLUMNS:
+        tgt_sheet.range((FOOTER_DATE_ROW, col)).value = date_str
+
+    for offset in range(2):
+        ref_row = ref_summary + offset
+        h = ref_sheet.range((ref_row, 1)).row_height
+        if h:
+            tgt_sheet.range((summary_row + offset, 1)).row_height = h
+    for row in range(FOOTER_BLOCK_FIRST_ROW, FOOTER_BLOCK_LAST_ROW + 1):
+        h = ref_sheet.range((row, 1)).row_height
+        if h:
+            tgt_sheet.range((row, 1)).row_height = h
 
 
 def copy_column_widths(source, target, last_col: int = 9) -> None:
@@ -230,8 +312,8 @@ def apply_row_highlights(sheet, entries: list[ReportEntry], sheet_name: str) -> 
 
 
 def copy_work_row_formats(ref_sheet, tgt_sheet, work_rows: list[int]) -> None:
-    """Copy wrap/align/border from a sample work row (June row 9)."""
-    sample_row = 9
+    """Copy wrap/align/border from a sample work row on July master."""
+    sample_row = work_row_sample(ref_sheet)
     for row in work_rows:
         copy_formats(
             ref_sheet.range(f"A{sample_row}:G{sample_row}"),
@@ -387,7 +469,8 @@ def fit_holiday_rows(ref_sheet, tgt_sheet, rows: list[int]) -> None:
         att.api.WrapText = False
         att.api.VerticalAlignment = XL_CENTER
         att.api.HorizontalAlignment = XL_CENTER
-        tgt_sheet.range((row, 1)).row_height = MIN_WORK_ROW_HEIGHT
+        master_h = ref_sheet.range((row, 1)).row_height
+        tgt_sheet.range((row, 1)).row_height = master_h or MIN_WORK_ROW_HEIGHT
 
 
 def _paste_copied_shape(ref_sheet, tgt_sheet) -> None:
@@ -398,33 +481,13 @@ def _paste_copied_shape(ref_sheet, tgt_sheet) -> None:
 
 
 def place_employee_signature(ref_sheet, tgt_sheet) -> bool:
-    """วางลายเซ็นพนักงานตามตำแหน่ง manual report-formatted.xlsx."""
-    ref_sh = get_shape(ref_sheet, SIGNATURE_SHAPE)
-    if ref_sh is None:
-        return False
-
-    delete_shape(tgt_sheet, SIGNATURE_SHAPE)
-
-    ref_sheet.activate()
-    ref_sh.Copy()
-    _paste_copied_shape(ref_sheet, tgt_sheet)
-
-    new_sh = tgt_sheet.api.Shapes(tgt_sheet.api.Shapes.Count)
-    anchor_top = tgt_sheet.range((SIGNATURE_ANCHOR_ROW, 1)).api.Top
-    try:
-        new_sh.LockAspectRatio = 0
-    except Exception:
-        pass
-    new_sh.Top = anchor_top + SIGNATURE_TOP_OFFSET
-    new_sh.Left = SIGNATURE_LEFT
-    new_sh.Width = SIGNATURE_WIDTH
-    new_sh.Height = SIGNATURE_HEIGHT
-    new_sh.Placement = 1  # xlMoveAndSize
-    try:
-        new_sh.Name = SIGNATURE_SHAPE
-    except Exception:
-        pass
-    return True
+    """วางลายเซ็นพนักงาน — offset จาก July master shape (anchor แถว 42)."""
+    return place_shape_like_ref(
+        ref_sheet,
+        tgt_sheet,
+        SIGNATURE_SHAPE,
+        anchor_row=SIGNATURE_ANCHOR_ROW,
+    )
 
 
 def place_shape_like_ref(
@@ -451,6 +514,10 @@ def place_shape_like_ref(
 
     new_sh.Top = tgt_anchor_top + top_offset
     new_sh.Left = ref_sh.Left
+    try:
+        new_sh.LockAspectRatio = 0
+    except Exception:
+        pass
     new_sh.Width = ref_sh.Width
     new_sh.Height = ref_sh.Height
     new_sh.Placement = 1  # xlMoveAndSize
@@ -458,6 +525,21 @@ def place_shape_like_ref(
         new_sh.Name = shape_name
     except Exception:
         pass
+    return True
+
+
+def sync_signature_size_from_master(ref_sheet, tgt_sheet) -> bool:
+    """ปรับเฉพาะ Width/Height ของ Picture 1 ให้ตรง July master — ไม่ขยับตำแหน่ง."""
+    ref_sh = get_shape(ref_sheet, SIGNATURE_SHAPE)
+    tgt_sh = get_shape(tgt_sheet, SIGNATURE_SHAPE)
+    if ref_sh is None or tgt_sh is None:
+        return False
+    try:
+        tgt_sh.LockAspectRatio = 0
+    except Exception:
+        pass
+    tgt_sh.Width = ref_sh.Width
+    tgt_sh.Height = ref_sh.Height
     return True
 
 
@@ -513,13 +595,14 @@ def ensure_shapes(ref_sheet, tgt_sheet, *, quiet: bool = False) -> None:
         delete_shape(tgt_sheet, extra)
     if replace_logo_from_ref(ref_sheet, tgt_sheet):
         if not quiet:
-            print("  copied logo from June")
+            print(f"  copied logo from {FORMAT_REFERENCE_SHEET}")
     else:
         sync_logo_from_ref(ref_sheet, tgt_sheet)
         if not quiet:
             print("  synced logo size")
 
     if place_employee_signature(ref_sheet, tgt_sheet):
+        sync_signature_size_from_master(ref_sheet, tgt_sheet)
         if not quiet:
             print("  placed employee signature")
     elif not quiet:
@@ -527,7 +610,7 @@ def ensure_shapes(ref_sheet, tgt_sheet, *, quiet: bool = False) -> None:
 
 
 def copy_page_setup(ref_sheet, tgt_sheet) -> None:
-    """ให้ July fit แนวนอนเหมือน June (CenterHorizontally, FitToPages, ฯลฯ)."""
+    """Copy page setup จาก July master (margins, fit-to-page, ฯลฯ)."""
     r = ref_sheet.api.PageSetup
     t = tgt_sheet.api.PageSetup
     t.PrintArea = r.PrintArea
@@ -568,173 +651,11 @@ def _copy_cell_from_ref(
         tgt.value = ref.value
 
 
-def _set_footer_font(
-    cell,
-    *,
-    bold: bool | None = None,
-    size: float | None = None,
-    name: str | None = None,
-) -> None:
-    if name is not None:
-        cell.api.Font.Name = name
-    if bold is not None:
-        cell.api.Font.Bold = bold
-    if size is not None:
-        cell.api.Font.Size = size
-
-
-def _normalize_footer_fonts(tgt_sheet) -> None:
-    """คงฟอนต์ footer — Angsana New 14pt; วันที่ไม่หนา."""
-    footer_cells = (
-        "A43", "D43", "G43",
-        "A44", "D44", "G44",
-        "A45", "D45", "G45",
-        "A46", "D46", "G46",
-        "D47",
-    )
-    for addr in footer_cells:
-        _set_footer_font(
-            tgt_sheet.range(addr),
-            name=FOOTER_FONT_NAME,
-            size=FOOTER_FONT_SIZE,
-            bold=False,
-        )
-    for addr in ("A46", "D46", "G46"):
-        _set_footer_font(tgt_sheet.range(addr), bold=True)
-    for row in (FOOTER_NAME_ROW, FOOTER_TITLE_ROW, FOOTER_DATE_ROW):
-        tgt_sheet.range((row, 1)).row_height = FOOTER_TEXT_ROW_HEIGHT
-
-
 def sync_january_master(january_sheet) -> None:
     """January เก็บ master — F43=Manager, H43=Approver, A44=Programmer."""
     january_sheet.range(JANUARY_MASTER_MANAGER_CELL).value = MANAGER_FOOTER_NAME
     january_sheet.range(JANUARY_MASTER_APPROVER_NAME_CELL).value = APPROVER_FOOTER_NAME
     january_sheet.range(JANUARY_MASTER_TITLE_CELL).value = EMPLOYEE_TITLE
-
-
-def apply_signature_footer(ref_sheet, tgt_sheet, *, year: int, month: int) -> None:
-    """3 คอลัมน์ลายเซ็น — แถว 45=ชื่อ, 46=ตำแหน่ง, 47=วันที่ (Review)."""
-    if tgt_sheet.name == "January":
-        sync_january_master(tgt_sheet)
-        return
-
-    last_day = date(year, month, calendar.monthrange(year, month)[1])
-    date_str = last_day.strftime("%d/%m/%Y")
-
-    copy_formats(ref_sheet.range("A43:G47"), tgt_sheet.range("A43:G47"))
-
-    for addr in ("A44:C44", "D44:E44", "D45:E45", "D46:E46", "D47:E47", "A45:B45", "A46:B46"):
-        try:
-            tgt_sheet.range(addr).unmerge()
-        except Exception:
-            pass
-
-    for col in range(1, 8):
-        tgt_sheet.range((FOOTER_LABEL_ROW, col)).value = None
-
-    review_label = tgt_sheet.range("D43")
-    review_label.value = REVIEW_LABEL_CELL
-    review_label.api.HorizontalAlignment = -4108
-
-    approve_label = tgt_sheet.range("G43")
-    approve_label.value = APPROVE_LABEL
-    approve_label.api.HorizontalAlignment = -4108
-
-    left_sig = tgt_sheet.range("A44:C44")
-    left_sig.merge()
-    left_sig.value = EMPLOYEE_SIG_LINE
-    left_sig.api.WrapText = True
-    left_sig.api.VerticalAlignment = XL_TOP
-    left_sig.api.HorizontalAlignment = -4108
-
-    mid_sig = tgt_sheet.range("D44:E44")
-    mid_sig.merge()
-    mid_sig.value = REVIEW_SIG_LINE
-    mid_sig.api.WrapText = True
-    mid_sig.api.VerticalAlignment = XL_TOP
-    mid_sig.api.HorizontalAlignment = -4108
-
-    right_sig = tgt_sheet.range("G44")
-    right_sig.value = APPROVE_SIG_LINE
-    right_sig.api.WrapText = True
-    right_sig.api.VerticalAlignment = XL_TOP
-    right_sig.api.HorizontalAlignment = -4108
-
-    tgt_sheet.range((FOOTER_SIG_ROW, 1)).row_height = SIGNATURE_ROW_HEIGHT
-
-    tgt_sheet.range("A45:B45").merge()
-    tgt_sheet.range("A45").formula = "=B5"
-
-    mid_name = tgt_sheet.range("D45:E45")
-    mid_name.merge()
-    mid_name.formula = f"=January!${JANUARY_MASTER_MANAGER_CELL}"
-    mid_name.api.HorizontalAlignment = -4108
-
-    tgt_sheet.range("G45").formula = f"=January!${JANUARY_MASTER_APPROVER_NAME_CELL}"
-    tgt_sheet.range("G45").api.HorizontalAlignment = -4108
-
-    tgt_sheet.range("A46:B46").merge()
-    tgt_sheet.range("A46").formula = "=January!$A$44"
-
-    mid_title = tgt_sheet.range("D46:E46")
-    mid_title.merge()
-    mid_title.value = MANAGER_FOOTER_TITLE
-    mid_title.api.HorizontalAlignment = -4108
-
-    tgt_sheet.range("G46").value = APPROVER_FOOTER_ROLE
-
-    _apply_footer_date_row(tgt_sheet, date_str)
-    _normalize_footer_fonts(tgt_sheet)
-
-
-def _apply_footer_date_row(tgt_sheet, date_str: str) -> None:
-    for addr in ("A47:B47", "F47:G47"):
-        try:
-            tgt_sheet.range(addr).unmerge()
-        except Exception:
-            pass
-    tgt_sheet.range("A47:G47").value = None
-
-    mid_date = tgt_sheet.range("D47:E47")
-    mid_date.merge()
-    mid_date.value = date_str
-    mid_date.api.HorizontalAlignment = -4108
-
-
-def copy_footer_layout(ref_sheet, tgt_sheet, summary_row: int) -> None:
-    """footer + summary ให้สัดส่วนเดียวกับ June."""
-    ref_summary = 39
-    copy_formats(
-        ref_sheet.range(f"A{ref_summary}:G{ref_summary + 1}"),
-        tgt_sheet.range(f"A{summary_row}:G{summary_row + 1}"),
-    )
-    for offset in range(2):
-        for col in (2, 4):
-            tgt_sheet.range((summary_row + offset, col)).value = ref_sheet.range(
-                (ref_summary + offset, col)
-            ).value
-    # อย่าทับแถวสรุปของเดือนเป้าหมาย (เช่น July แถว 41) ด้วยแถวว่างของ June
-    for row in range(41, 48):
-        if summary_row <= row <= summary_row + 1:
-            continue
-        copy_formats(
-            ref_sheet.range(f"A{row}:G{row}"),
-            tgt_sheet.range(f"A{row}:G{row}"),
-        )
-    for row in range(41, 43):
-        if summary_row <= row <= summary_row + 1:
-            continue
-        h = ref_sheet.range((row, 1)).row_height
-        if h:
-            tgt_sheet.range((row, 1)).row_height = h
-    for row in range(45, 48):
-        h = ref_sheet.range((row, 1)).row_height
-        if h:
-            tgt_sheet.range((row, 1)).row_height = h
-    for offset in range(2):
-        h = ref_sheet.range((ref_summary + offset, 1)).row_height
-        if h:
-            tgt_sheet.range((summary_row + offset, 1)).row_height = h
 
 
 def apply_summary_formulas(tgt, last_data_row: int, summary_row: int) -> None:
@@ -749,25 +670,31 @@ def apply_template_structure(
     year: int,
     month: int,
 ) -> None:
-    """จัด header, summary, footer ตาม layout ยืนยัน — ไม่แตะข้อมูลแถวงาน."""
+    """จัด header, summary, footer จาก layout master — ไม่แตะข้อมูลแถวงาน."""
     if tgt_sheet.name == "January":
         sync_january_master(tgt_sheet)
+        return
+    if tgt_sheet.name == FORMAT_REFERENCE_SHEET:
+        return
 
     days_in_month = calendar.monthrange(year, month)[1]
     last_data_row = HEADER_ROW + days_in_month
-    summary_row = last_data_row + 2
+    summary_row = summary_row_for_days(days_in_month)
 
     copy_column_widths(ref_sheet, tgt_sheet)
-    copy_row_heights(ref_sheet, tgt_sheet, last_row=summary_row + 8)
+    copy_row_heights(ref_sheet, tgt_sheet, last_row=FOOTER_BLOCK_LAST_ROW)
     copy_page_setup(ref_sheet, tgt_sheet)
     apply_table_header(ref_sheet, tgt_sheet)
     fix_date_header(ref_sheet, tgt_sheet, last_data_row)
-    apply_summary_formulas(tgt_sheet, last_data_row, summary_row)
-    copy_footer_layout(ref_sheet, tgt_sheet, summary_row)
-    apply_signature_footer(ref_sheet, tgt_sheet, year=year, month=month)
-    if tgt_sheet.name != "January":
-        ensure_shapes(ref_sheet, tgt_sheet, quiet=True)
-        tgt_sheet.range((FOOTER_SIG_ROW, 1)).row_height = SIGNATURE_ROW_HEIGHT
+    copy_master_footer_block(
+        ref_sheet,
+        tgt_sheet,
+        year=year,
+        month=month,
+        last_data_row=last_data_row,
+        summary_row=summary_row,
+    )
+    ensure_shapes(ref_sheet, tgt_sheet, quiet=True)
 
     holiday_rows = scan_holiday_rows(tgt_sheet, HEADER_ROW + 1, last_data_row)
     fit_holiday_rows(ref_sheet, tgt_sheet, holiday_rows)
@@ -781,22 +708,27 @@ def clear_readonly(path: Path) -> None:
 def format_month_sheet(
     *,
     target_month: str,
-    reference_month: str = FORMAT_REFERENCE_SHEET,
+    reference_month: str | None = None,
 ) -> Path:
-    assert_original_readonly()
     ensure_dirs()
+    reference_month = reference_month or FORMAT_REFERENCE_SHEET
 
+    if not LAYOUT_MASTER_WORKBOOK.exists():
+        raise FileNotFoundError(
+            f"ไม่พบ layout master: {LAYOUT_MASTER_WORKBOOK}\n"
+            "ต้องมี report-formatted.xlsx ที่ยืนยัน July แล้ว (กู้จาก 03-archive/ ได้)"
+        )
     if not WORKING_DATA.exists():
         raise FileNotFoundError(
             f"ไม่พบไฟล์ข้อมูล: {WORKING_DATA}\n"
-            "รัน tools/excel/write_month_data.py หรือ copy template มาก่อน"
+            "รัน tools/excel/write_month_data.py ก่อน"
         )
 
     entries = read_month_entries(WORKING_DATA, target_month)
     year, month = month_year_from_entries(entries, target_month)
     days_in_month = calendar.monthrange(year, month)[1]
     last_data_row = HEADER_ROW + days_in_month
-    summary_row = last_data_row + 2
+    summary_row = summary_row_for_days(days_in_month)
     work_rows = work_row_numbers(entries, target_month)
     holiday_rows = holiday_row_numbers(entries, target_month)
 
@@ -805,63 +737,136 @@ def format_month_sheet(
         archive = ARCHIVE_DIR / f"report-formatted_{stamp}.xlsx"
         clear_readonly(WORKING_FORMATTED)
         shutil.copy2(WORKING_FORMATTED, archive)
+        print(f"Archived -> {archive.name}")
 
     clear_readonly(WORKING_FORMATTED)
-    if WORKING_FORMATTED.exists():
-        WORKING_FORMATTED.unlink()
-    shutil.copy2(ORIGINAL_TEMPLATE, WORKING_FORMATTED)
-    clear_readonly(WORKING_FORMATTED)
-    print(f"Copied template -> {WORKING_FORMATTED.name} (original untouched)")
+
+    if target_month == FORMAT_REFERENCE_SHEET:
+        raise ValueError(
+            f"ห้าม format ชีต {FORMAT_REFERENCE_SHEET} ด้วย script — "
+            f"แก้ใน {LAYOUT_MASTER_WORKBOOK.name} แล้ว copy ใหม่"
+        )
 
     app = xw.App(visible=False, add_book=False)
+    master_wb = None
     try:
+        ref, master_wb = open_layout_reference(app)
         wb = app.books.open(str(WORKING_FORMATTED.resolve()))
-        ref = wb.sheets[reference_month]
+        if target_month not in [s.name for s in wb.sheets]:
+            raise ValueError(f"ไม่พบชีต {target_month!r} ใน {WORKING_FORMATTED.name}")
         tgt = wb.sheets[target_month]
 
         copy_column_widths(ref, tgt)
-        copy_row_heights(ref, tgt, last_row=summary_row + 8)
+        copy_row_heights(ref, tgt, last_row=FOOTER_BLOCK_LAST_ROW)
         copy_page_setup(ref, tgt)
         apply_table_header(ref, tgt)
 
         fix_date_header(ref, tgt, last_data_row)
-        apply_summary_formulas(tgt, last_data_row, summary_row)
 
         n = apply_all_entries(tgt, entries, target_month)
         copy_work_row_formats(ref, tgt, work_rows)
         apply_row_highlights(tgt, entries, target_month)
         apply_text_layout(tgt, work_rows)
-        fit_work_row_heights(tgt, work_rows, ref)
         fit_holiday_rows(ref, tgt, holiday_rows)
+        align_data_area_to_master(ref, tgt)
         print(f"Applied {n} work rows; holiday rows {len(holiday_rows)}")
 
-        copy_footer_layout(ref, tgt, summary_row)
-        apply_signature_footer(ref, tgt, year=year, month=month)
+        copy_master_footer_block(
+            ref,
+            tgt,
+            year=year,
+            month=month,
+            last_data_row=last_data_row,
+            summary_row=summary_row,
+        )
         ensure_shapes(ref, tgt)
-        tgt.range((FOOTER_SIG_ROW, 1)).row_height = SIGNATURE_ROW_HEIGHT
-        # ปรับความสูงแถวงานอีกครั้งหลัง footer/shapes (กันถูก template ทับ)
-        apply_text_layout(tgt, work_rows)
-        fit_work_row_heights(tgt, work_rows, ref)
 
         wb.save()
         wb.close()
     finally:
+        if master_wb is not None:
+            master_wb.close()
         app.quit()
 
     return WORKING_FORMATTED
 
 
+def fix_signature_sizes(
+    months: list[str] | None = None,
+    *,
+    workbook: Path | None = None,
+) -> Path:
+    """Sync Picture 1 W/H จาก layout master — ไม่แตะ layout อื่น."""
+    months = months or ["September", "October", "November", "December"]
+    path = Path(workbook or WORKING_FORMATTED).resolve()
+    master_path = LAYOUT_MASTER_WORKBOOK.resolve()
+    ensure_dirs()
+
+    app = xw.App(visible=False, add_book=False)
+    master_wb = None
+    try:
+        if path == master_path:
+            wb = app.books.open(str(path))
+            ref = wb.sheets[FORMAT_REFERENCE_SHEET]
+        else:
+            ref, master_wb = open_layout_reference(app)
+            wb = app.books.open(str(path))
+        fixed = 0
+        for month in months:
+            if month not in [s.name for s in wb.sheets]:
+                print(f"  skip {month} (no sheet)")
+                continue
+            if month == FORMAT_REFERENCE_SHEET:
+                continue
+            if sync_signature_size_from_master(ref, wb.sheets[month]):
+                fixed += 1
+                print(f"  fixed signature size: {month}")
+        wb.save()
+        wb.close()
+        print(f"Done — {fixed} sheet(s)")
+    finally:
+        if master_wb is not None:
+            try:
+                master_wb.close()
+            except Exception:
+                pass
+        app.quit()
+    return path
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Format month sheet like template; output report-formatted.xlsx"
+        description="Format month sheet using July layout master in report-formatted.xlsx"
     )
-    parser.add_argument("--month", default="July", help="Sheet name e.g. July, August")
+    parser.add_argument("--month", help="Sheet name e.g. July, August")
+    parser.add_argument(
+        "--fix-signature-size",
+        action="store_true",
+        help="Sync Picture 1 W/H only (default months: Sep-Dec)",
+    )
+    parser.add_argument(
+        "--months",
+        nargs="*",
+        default=["September", "October", "November", "December"],
+        help="Sheets for --fix-signature-size",
+    )
     parser.add_argument(
         "--reference",
         default=FORMAT_REFERENCE_SHEET,
-        help="Reference sheet for logo/signature (default: June)",
+        help=f"Layout reference sheet (default: {FORMAT_REFERENCE_SHEET})",
+    )
+    parser.add_argument(
+        "--workbook",
+        type=Path,
+        default=None,
+        help="Target xlsx (default: report-formatted; use layout master path to fix master)",
     )
     args = parser.parse_args()
+    if args.fix_signature_size:
+        fix_signature_sizes(args.months, workbook=args.workbook)
+        return
+    if not args.month:
+        args.month = "July"
     out = format_month_sheet(target_month=args.month, reference_month=args.reference)
     print(f"Done: {out}")
 
