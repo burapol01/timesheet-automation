@@ -56,4 +56,11 @@ AUGUST_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Testing + Proof: Task 40322 frontend status contract + Live DB rollback, Task 39962 Azure close, queue finalize hardening",
         "Task 40322: Frontend status guide publish, real-app rollback Live DB 5/5 PASS (aa7eade1), MSI Pure C# 23/23, daily close sync; Task 39962 Azure Closed (Phase 6C Worker pickup f0d494da); Task 39957 defer/metadata decisions; Windows queue exit-status fix + timesheet daily bootstrap — Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 8, 13),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Analysis + Testing: WS activity root-cause, Tasks 40411/40413 proof, Worker route/testdb2 audits",
+        "WS activity ROOTCAUSE_PACKET_PASS + Azure backlog; Tasks 40411/40413 PROOF_READY 14/14; Worker testdb2 SSQ HOLD_ROUTE_MISMATCH; effective route EFFECTIVE_TESTDB2_PROVEN; Testdb2 REVAMP Worker direct investigation; AS400 historical OLAE PROBE_PASS; WS log deploy cancelled zero side-effect — Activation NO-GO",
+    ),
 ]
