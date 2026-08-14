@@ -63,4 +63,11 @@ AUGUST_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Analysis + Testing: WS activity root-cause, Tasks 40411/40413 proof, Worker route/testdb2 audits",
         "WS activity ROOTCAUSE_PACKET_PASS + Azure backlog; Tasks 40411/40413 PROOF_READY 14/14; Worker testdb2 SSQ HOLD_ROUTE_MISMATCH; effective route EFFECTIVE_TESTDB2_PROVEN; Testdb2 REVAMP Worker direct investigation; AS400 historical OLAE PROBE_PASS; WS log deploy cancelled zero side-effect — Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 8, 14),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Testing + Proof: Task 40413 post-blackout AS400 terminal, HSGB master, payment MPOS prep",
+        "Task 40413: same-TA post-blackout SAME_TA_AS400_TERMINAL_PROVEN (TA2608149017); HSGB master SendOrder 17 on TA2608145001 APP_ID 364; FTR-PAY-MODAL-TOTAL-001 payment modal mismatch; payment/record-mpos v5 TA2608145003 PA Payment_Tr 1/9493 stopped before OLAE; queue agent-first/monitor fixes — Activation NO-GO",
+    ),
 ]
