@@ -70,4 +70,12 @@ AUGUST_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Testing + Proof: Task 40413 post-blackout AS400 terminal, HSGB master, payment MPOS prep",
         "Task 40413: same-TA post-blackout SAME_TA_AS400_TERMINAL_PROVEN (TA2608149017); HSGB master SendOrder 17 on TA2608145001 APP_ID 364; FTR-PAY-MODAL-TOTAL-001 payment modal mismatch; payment/record-mpos v5 TA2608145003 PA Payment_Tr 1/9493 stopped before OLAE; queue agent-first/monitor fixes — Activation NO-GO",
     ),
+    # advance — prepared 2026-08-16 (Sunday); work performed on non-work day, row for next work day 2026-08-17
+    ReportEntry(
+        date(2026, 8, 17),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Development + Testing: Cursor UI Bridge V3-V10 paste proofs, queue poll hardening, Local LLM watcher",
+        "Cursor UI Bridge V3-V10 Owner-visible paste/hotkey/composer proofs (V5-V10), superseded READY filter, fetch-blocked poll hardening, persistent paste watcher V8B, Local LLM asset upload watcher dispatch — Activation NO-GO",
+    ),
 ]
