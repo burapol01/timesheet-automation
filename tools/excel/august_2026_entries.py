@@ -78,4 +78,40 @@ AUGUST_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Development + Testing: Cursor UI Bridge V3-V10 paste proofs, queue poll hardening, Local LLM watcher",
         "Cursor UI Bridge V3-V10 Owner-visible paste/hotkey/composer proofs (V5-V10), superseded READY filter, fetch-blocked poll hardening, persistent paste watcher V8B, Local LLM asset upload watcher dispatch — Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 8, 18),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Analysis: MSI workspace cleanup, evidence recovery, Cursor UI Bridge intake",
+        "MSI workspace cleanup — recover stale worktree evidence (daily report, Task 40411/40413 intake, Worker testdb2 plan, Cursor UI Bridge V4 POC) — Activation NO-GO",
+    ),
+    ReportEntry(
+        date(2026, 8, 19),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Testing + Analysis: Revamp UAT Worker session, 5010 F986 despatch, ID dash parity, OPD ST733",
+        "Revamp2024 UAT PM — TA2608185008 SM (ID dash fix), TA2608196006 OPD1 ST733 F, 5010 despatch F986 evidence, Frontend PayMode verify closure, Worker investigation 17-19 Aug — Activation NO-GO",
+    ),
+    ReportEntry(
+        date(2026, 8, 20),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Testing + Development: UAT EOD OPD/TR3N/K10C gaps, Local LLM Windows POC",
+        "Revamp2024 UAT 20 Aug EOD — OA_M_WIN_DESCRIPTION wslog parity, OPD three-fields, TR3N pair, K10C Menu not found; Local LLM supervised merge Cursor POC + Git triage on Windows — Activation NO-GO",
+    ),
+    ReportEntry(
+        date(2026, 8, 21),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Testing + Proof: UAT SM cases, LTEWI5 closure, post-send/OPD closures, CRS Azure handoff",
+        "UAT 21 Aug — SM 5001/5002/5004/5006/5007, LTEWI5 unlock CLOSED, OA_M_WIN_DESCRIPTION post-send CLOSED, OPD1 6006/5004 CLOSED, CRS gap D153/D154 Azure handoff, Backend dev 5dc98535 v1.20.1, Obsidian overnight relay + Cursor live watcher — Activation NO-GO",
+    ),
+    # advance — prepared 2026-08-23 (Sunday); weekend work 2026-08-22–23, row for next work day 2026-08-24
+    ReportEntry(
+        date(2026, 8, 24),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Development + Testing: Queue auto-finalize publish fix, automation smoke proof retry 2, Task 41135 F986 analysis",
+        "Windows queue auto-finalize publish fix (remote readback PASS), FTR final automation smoke proof retry 2 PASS, Task 41135 F986/5010 despatch analysis-design (retest 8036001 S) — Activation NO-GO",
+    ),
 ]
