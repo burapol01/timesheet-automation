@@ -114,4 +114,11 @@ AUGUST_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Development + Testing: Queue auto-finalize publish fix, automation smoke proof retry 2, Task 41135 F986 analysis",
         "Windows queue auto-finalize publish fix (remote readback PASS), FTR final automation smoke proof retry 2 PASS, Task 41135 F986/5010 despatch analysis-design (retest 8036001 S) — Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 8, 25),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Analysis + Testing: Task 40563 PA43 Rider Wave A matrix, Worker forensic observability, Backend SEND_ORDER gap, morning brief, DBA handoff",
+        "Task 40563: Wave A live matrix 5059–5062 MATRIX_PARTIAL_ACTIONABLE; Worker fail-open source CONFIRMED; Backend SEND_ORDER gap read-only PARTIAL_ACTIONABLE; owned-TA proof HOLD; sensitive remediation; morning brief + DBA Base-rank handoff; overnight audit SAFE_OVERNIGHT_FINALIZATION_PASS — Activation NO-GO",
+    ),
 ]
