@@ -121,4 +121,11 @@ AUGUST_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Analysis + Testing: Task 40563 PA43 Rider Wave A matrix, Worker forensic observability, Backend SEND_ORDER gap, morning brief, DBA handoff",
         "Task 40563: Wave A live matrix 5059–5062 MATRIX_PARTIAL_ACTIONABLE; Worker fail-open source CONFIRMED; Backend SEND_ORDER gap read-only PARTIAL_ACTIONABLE; owned-TA proof HOLD; sensitive remediation; morning brief + DBA Base-rank handoff; overnight audit SAFE_OVERNIGHT_FINALIZATION_PASS — Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 8, 26),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Testing + Proof: Task 40563 Save path master proof, Stage C deploy proof, SP SEND_ORDER root cause, Worker fail-closed card",
+        "Task 40563: SAVE_PATH_MASTER_PROOF_PASS (41/41) Backend 3bfa614b; DEPLOY_PROOF_PASS + STAGE_C_PARTIAL isolated API :5231 C1–C3 AppInfo PASS (TA5010–5012); SP rider-before-base CONFIRMED TA2608265025; Worker fail-closed patch CODED; HOLD_AMQ_GAP PA43 SEND_ORDER; authority receiver fix + MSI pinned receiver — Activation NO-GO",
+    ),
 ]
