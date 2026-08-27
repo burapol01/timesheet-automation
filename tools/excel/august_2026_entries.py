@@ -128,4 +128,11 @@ AUGUST_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Testing + Proof: Task 40563 Save path master proof, Stage C deploy proof, SP SEND_ORDER root cause, Worker fail-closed card",
         "Task 40563: SAVE_PATH_MASTER_PROOF_PASS (41/41) Backend 3bfa614b; DEPLOY_PROOF_PASS + STAGE_C_PARTIAL isolated API :5231 C1–C3 AppInfo PASS (TA5010–5012); SP rider-before-base CONFIRMED TA2608265025; Worker fail-closed patch CODED; HOLD_AMQ_GAP PA43 SEND_ORDER; authority receiver fix + MSI pinned receiver — Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 8, 27),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Testing + Proof: Task 40563 Pre-PR live gates R1–R3, Backend V1 pin validation, PA authority exact-pin, recovery watchdog, security redaction",
+        "Task 40563: Pre-PR Gate A PA52–54 master 191/191 PASS; R2 GATE_B_PASS TA2608275006 PA52 9/9 riders OLAE 10 rows base-first; R3 HOLD_DB_ACCESS; Backend pins 5d1fdb2c/8de645be/25a715c9 validated (57/57+53/53+56/56); recovery watchdog + SECURITY_FOLLOWUP_PASS redaction; MSI safe-close PAUSED_HOLD — Activation NO-GO",
+    ),
 ]
