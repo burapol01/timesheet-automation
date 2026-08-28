@@ -135,4 +135,11 @@ AUGUST_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Testing + Proof: Task 40563 Pre-PR live gates R1–R3, Backend V1 pin validation, PA authority exact-pin, recovery watchdog, security redaction",
         "Task 40563: Pre-PR Gate A PA52–54 master 191/191 PASS; R2 GATE_B_PASS TA2608275006 PA52 9/9 riders OLAE 10 rows base-first; R3 HOLD_DB_ACCESS; Backend pins 5d1fdb2c/8de645be/25a715c9 validated (57/57+53/53+56/56); recovery watchdog + SECURITY_FOLLOWUP_PASS redaction; MSI safe-close PAUSED_HOLD — Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 8, 28),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Analysis + Proof: TR3N FE handoff, TA2608285005 BANK_CODE dev verify, TA2608285011/5012 memo SSQ proof, guides layers/playbooks taxonomy",
+        "TR3N term parity - FE primary fix (persist planCode+term like Legacy); TA2608285005 TR106 BANK_CODE truncate root cause + dev fix dc1540f7 v1.35.1 unit 12/12 PASS (live resubmit pending); TA2608285011/5012 Auto UW memo SSQ proof - life_followup_create creates 5 only, CRS/MEB/MEJ AS400 host-side; guides reorganize layers/ + playbooks/ with SSMS query templates; test backlog matrix TR3N/Menu-not-found/40563 - Activation NO-GO",
+    ),
 ]
