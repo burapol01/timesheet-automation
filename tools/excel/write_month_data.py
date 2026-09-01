@@ -19,12 +19,13 @@ sys.path.insert(0, str(EXCEL_TOOLS))
 from excel_report import init_working_data, write_entries  # noqa: E402
 from august_2026_entries import AUGUST_2026_ENTRIES  # noqa: E402
 from july_2026_entries import JULY_2026_ENTRIES  # noqa: E402
+from september_2026_entries import SEPTEMBER_2026_ENTRIES  # noqa: E402
 from paths import WORKING_DATA  # noqa: E402
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Write month data to report-data.xlsx")
-    parser.add_argument("--month", default="July", choices=["July", "August"])
+    parser.add_argument("--month", default="July", choices=["July", "August", "September"])
     args = parser.parse_args()
 
     init_working_data()
@@ -32,6 +33,8 @@ def main() -> None:
         entries = JULY_2026_ENTRIES
     elif args.month == "August":
         entries = AUGUST_2026_ENTRIES
+    elif args.month == "September":
+        entries = SEPTEMBER_2026_ENTRIES
     else:
         raise ValueError(f"No seed data for {args.month}")
 
