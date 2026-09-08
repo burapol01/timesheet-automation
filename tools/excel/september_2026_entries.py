@@ -28,4 +28,11 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Development + Proof + Documentation: Sep-3 PA43 OLAE guard submit fix PR #8682 merge dev + UAT TA2609035028 createnew pass + SOAP/rowshape forensics + contact-address A/B",
         "Sep-3 — PA43 paAttach submit-layer fix: wire IPAAttachedRiderRepository fail-closed + null OLAE shape for attached riders; PR #8682 merged dev; UAT TA2609035028 createnew+send SEND_STATUS=S (10 cov S, paAttach COVERAGE/PAYMENT null); morning forensics — SOAP semantic R2, row-shape A/B reject, extra-TA containment, effective-config ON, wslog TA2608245058 vs TA2609035012 compare, createnew XML replay; afternoon TA2609035052 client-create address mapping fail proof + AppInfo JSON export; T6776 DrugFlag ever gap still open; Worker VB ON HOLD — read-only/Owner-authorized UAT write, Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 9, 7),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Development + Proof + Documentation: Sep-7 salary gate blank Payor income→0 PR #8747 merge + Owner FE TA2609075010 SM/S",
+        "Sep-7 — salaryhistory Enhance parity: Backend blank/null Payor ANNUAL_INCOME→0 (PayerClientCommandMaterializer + mapPayer); PR #8747 merged dev 41727cea; prove TA2609075007 salary PASS; Owner FE TA2609075010 / 18035645 SM/S cov 10/10 receipt 109+I2; LOG 9675 = probe pay 106 BANK null not Coverage; residual FE clear TA2609075002 + distinct-payor force-address — read-only/Owner-authorized UAT write, Activation NO-GO",
+    ),
 ]
