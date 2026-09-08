@@ -32,6 +32,7 @@ timesheet-automation/
         ├── sync_template_layout.py
         ├── export_pdf.py
         ├── verify_holidays.py
+        ├── validate_month_coverage.py
         └── july_2026_entries.py
     └── email/                      # draft / ส่ง PDF
         ├── draft_to_manager.py
@@ -52,6 +53,14 @@ python tools/excel/write_month_data.py --month July
 ```powershell
 python tools/excel/verify_holidays.py --month July --year 2026
 ```
+
+### 2b) ตรวจช่องว่างย้อนหลังทั้งเดือน (queue jobs บังคับ)
+
+```powershell
+py -3 tools/excel/validate_month_coverage.py --month September --year 2026 --through 2026-09-07
+```
+
+`SEED_GAPS` → เขียน seed/Excel ก่อน แล้วค่อย `submit_timesheet --from-date <month-01> --to-date <through>`
 
 ### 3) จัด format รายเดือน (xlwings → report-formatted.xlsx)
 

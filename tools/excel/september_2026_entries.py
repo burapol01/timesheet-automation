@@ -29,6 +29,13 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Sep-3 — PA43 paAttach submit-layer fix: wire IPAAttachedRiderRepository fail-closed + null OLAE shape for attached riders; PR #8682 merged dev; UAT TA2609035028 createnew+send SEND_STATUS=S (10 cov S, paAttach COVERAGE/PAYMENT null); morning forensics — SOAP semantic R2, row-shape A/B reject, extra-TA containment, effective-config ON, wslog TA2608245058 vs TA2609035012 compare, createnew XML replay; afternoon TA2609035052 client-create address mapping fail proof + AppInfo JSON export; T6776 DrugFlag ever gap still open; Worker VB ON HOLD — read-only/Owner-authorized UAT write, Activation NO-GO",
     ),
     ReportEntry(
+        date(2026, 9, 4),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Development + Proof + Documentation: Sep-4 OA_T_CLIENT always-2 self-addr PR #8722 merge + UAT SM/S + SSQ memo/SEND forensics + FAT/MED gap",
+        "Sep-4 — OA_T_CLIENT always-2 self address: PR #8722 merged dev; UAT TA2609045033/5038/5040 SM/S (clients=2); TA2609045041 QU/W memo C20+PRE only; morning DrugFlag ever→T6776 inventory; evening SSQ/memo SEND forensics; FAT/MED + 90%≠SEND_LIFE_ASIA=N gap noted — Owner-authorized UAT write, Activation NO-GO",
+    ),
+    ReportEntry(
         date(2026, 9, 7),
         ATTENDANCE_WORK,
         "FTRV033",

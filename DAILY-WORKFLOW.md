@@ -75,23 +75,40 @@ python tools/excel/format_report.py --month July
 python tools/excel/verify_holidays.py --month July --year 2026
 ```
 
+**3b. ตรวจช่องว่างย้อนหลังทั้งเดือน (บังคับทุก queue job)**
+
+```powershell
+# ไล่จากวันที่ 1 ของเดือน → วันเป้าหมาย (ข้าม weekend / วันหยุดใน Excel)
+py -3 tools/excel/validate_month_coverage.py --month September --year 2026 --through 2026-09-07
+```
+
+| ผล | ทำอะไร |
+|----|--------|
+| `COMPLETE` | Excel ครบ → ไป step 4–5 โดยใช้ `--from-date` = วันที่ 1 ของเดือน (script ข้ามวันที่มีบนเว็บแล้ว) |
+| `SEED_GAPS` / exit 2 | มีวันทำงานหายใน Excel (เช่น 4 ก.ย.) → **เขียน seed + write_month_data ก่อน** แล้วค่อยส่งเว็บ — ห้ามส่งเว็บวันเดียวแล้วจบ |
+
+ลำดับแก้ gap: **Excel ก่อน → intranet ทีหลัง** (ห้าม invent remark — ดึงจาก daily report / run report ของวันนั้น)
+
 **4. Dry-run ส่ง intranet**
 
 ```powershell
-python tools/web/submit_timesheet.py --sheet July --from-date 2026-07-28 --to-date 2026-07-28 --dry-run
+# ตรวจทั้งเดือนถึงวันเป้าหมาย — ไม่ใช่แค่วันเดียว
+python tools/web/submit_timesheet.py --sheet September --from-date 2026-09-01 --to-date 2026-09-07 --dry-run
 ```
 
 **5. ส่งจริง (คุณกด save บนเว็บ — หรือ script save ให้)**
 
 ```powershell
-# ครั้งแรก (วันที่ยังไม่มี entry)
-python tools/web/submit_timesheet.py --sheet July --from-date 2026-07-28 --to-date 2026-07-28
+# ครั้งแรก / เติมช่องว่าง — จากวันที่ 1 ถึงวันเป้าหมาย (ข้ามวันที่มี entry แล้ว)
+python tools/web/submit_timesheet.py --sheet September --from-date 2026-09-01 --to-date 2026-09-07
 
 # แก้ remark วันเดิม — ต้องใช้ --force (อัปเดตแถบเดิม ไม่สร้างแถบใหม่)
-python tools/web/submit_timesheet.py --sheet July --from-date 2026-07-28 --to-date 2026-07-28 --force
+python tools/web/submit_timesheet.py --sheet September --from-date 2026-09-07 --to-date 2026-09-07 --force
 ```
 
 > `--force` เปิด modal แก้ไข + ตั้ง `sessionStorage.Id` ก่อน Save — ป้องกัน duplicate bar บนปฏิทิน
+>
+> **Bug fixed (2026-09-04):** หลัง SaveTimesheet ปฏิทินเว็บมักกระโดดกลับเดือนปัจจุบัน แต่ script เคยเชื่อ cache ว่ายังอยู่เดือนเดิม → วันถัดไปหา cell ไม่เจอแล้ว ERROR (ดูเหมือน "ข้าม") — `ensure_month` อ่านหัวปฏิทินจาก DOM ทุกครั้งแล้ว
 
 ---
 
