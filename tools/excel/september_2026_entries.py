@@ -84,4 +84,32 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Development + Proof + Documentation: Sep-15 G2 probe + Worker deploy WaitStart/file log + send proofs + Phase A health + plugin ICT time",
         "Sep-15 — G2 availability 503 root cause TA2609145003; skip-pay SEND_LIFE_ASIA Enhance Y vs Revamp N parity FTR-KI-010; infra unblock send 18036131; deploy Worker de2a255 WaitStart=150000 + NetworkService ACL file log; TA2609155001 Health-Q 4/4 natural; TA2609155019 post-deploy SM/S 18036169; Phase A worker health probes G2/FILE_LOG/wslog/lane drift; ftr-work-tracker health UI Thai timezone; local worker guard — Owner-authorized UAT deploy read-only monitor, Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 9, 16),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Development + Proof + Documentation: Sep-16 EKYC bypass API merge dev + skip-pay parity close + Work Tracker 0.8.0 Azure reconcile",
+        "Sep-16 — EKYC bypass API merged Backend dev c251612a; TA2609165012/5016/5017/5025/5027 bypass PASS; skip-pay FTR-KI-010 closed TA2609145002 vs Enhance TA2609152003; Work Tracker 0.8.0 sprint validator fix + Azure 18-card reconcile; TA2609165006 address audit 42787; plugin ICT time baseline — Owner-authorized UAT write, Activation NO-GO",
+    ),
+    ReportEntry(
+        date(2026, 9, 17),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Proof + Documentation: Sep-17 address submit ADP matrix PA FATCA Recurring/SD/Memo UAT + PA43 Worker dirty-deploy fix FTR-KI-013",
+        "Sep-17 — TA2609165006 address submit PASS; ADP matrix FTR-KI-012 to MSI; PA FATCA TA2609175002 probe; Owner UAT PASS Recurring TA2609175015 GB Prime TA2609175023 Solution Design TA2609175019/5020 Memo TA2609175013; PA43 Worker dirty-tree deploy incident TA2609175038 fail to TA2609175043 PASS; deploy preflight rule FTR-KI-013 — Owner-authorized UAT deploy, Activation NO-GO",
+    ),
+    ReportEntry(
+        date(2026, 9, 18),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Proof + Documentation: Sep-18 FATCA S5011 Revamp vs Enhance parity probe + datadic design + plugin/UI missions",
+        "Sep-18 — FATCA Revamp LFAST S5011 matrix TA2609182005/5010/5036/5039/5045; W8B+DOC gap escalate LFAST; tester playbook; datadic design 20260918; claude evidence badges gantt; csharp quality gap cards; 42546 distinct payer; memo decode reference update — read-only survey/probe, Activation NO-GO",
+    ),
+    ReportEntry(
+        date(2026, 9, 21),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Proof + Documentation: Sep-21 Revamp Sprint UAT BOM day-1 handoff + Case 26 Enhance clone R2 + PA 12/21 HOLD",
+        "Sep-21 — Sprint Excel 49-case handoff to Tester agent 00020018; PA Case 12/21 BOM clone HOLD QU/W; Case 26 Enhance oracle TA2609212008 PASS; Revamp R1 TA2609215014 SendLifeAsia FTR-KI-008; R2 TA2609215018 SM/S TRP3 AS400 575 vs 604 issue-date drift; local API 95 commits behind dev; datadic DB diagram prep — BOM via local API, Activation NO-GO",
+    ),
 ]
