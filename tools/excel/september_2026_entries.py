@@ -112,4 +112,18 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Proof + Documentation: Sep-21 Revamp Sprint UAT BOM day-1 handoff + Case 26 Enhance clone R2 + PA 12/21 HOLD",
         "Sep-21 — Sprint Excel 49-case handoff to Tester agent 00020018; PA Case 12/21 BOM clone HOLD QU/W; Case 26 Enhance oracle TA2609212008 PASS; Revamp R1 TA2609215014 SendLifeAsia FTR-KI-008; R2 TA2609215018 SM/S TRP3 AS400 575 vs 604 issue-date drift; local API 95 commits behind dev; datadic DB diagram prep — BOM via local API, Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 9, 22),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Proof + Documentation: Sep-22 Happy-path BOM closeout + TA2609145009 partial submit pipeline + repro TA2609225048 + log checker proposal",
+        "Sep-22 — CL5FAC agent registry 00017506; Happy-path BOM agent 00020022 batch/ledger/closeout PA53 closed sale; post-migrate prod parity buckets 0; GIO 18/36 submit block questionnaire routing; anchor TA2609145009 PA+OLAE QU/N no SEND_LIFE_ASIA row vs TA2609145007 SM/Y; C# submit date AppInfoRevampSubmitStatusPersister; clone repro TA2609225048 writeExecuted Y; Backend dev 1e2fb6e1 Release build; proposal ftr-revamp-submit-pipeline-integrity-probe — read-only/Owner-authorized UAT API, Activation NO-GO",
+    ),
+    ReportEntry(
+        date(2026, 9, 23),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Proof + Analysis: Sep-23 Revamp sprint Excel/Tester sync + legacy BUS-49–55 atlas + pilot 2/4/22 readback + Case 1 KYP BOM",
+        "Sep-23 — sync Test_Revamp_sprint (3).xlsm snapshot/manifest; fill Actual result 13 cases from BOM readback (0/49 CLEAN PASS); legacy active-path atlas + Azure BUS-49–55 #43757–#43763 inventory; AgentMate pre-WCF reducer vs WCF mapper census; pilot cases 2/4/22 six-gate 0/3 CLEAN PASS EVIDENCE_PARTIAL; Case 1 KYP BOM TA2609235008 KYP_MISSING; Case 20 EK BOM; queue terminal coherence; webservice parity packet readback — read-only/Owner-authorized UAT, Activation NO-GO",
+    ),
 ]
