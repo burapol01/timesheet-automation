@@ -126,4 +126,11 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Proof + Analysis: Sep-23 Revamp sprint Excel/Tester sync + legacy BUS-49–55 atlas + pilot 2/4/22 readback + Case 1 KYP BOM",
         "Sep-23 — sync Test_Revamp_sprint (3).xlsm snapshot/manifest; fill Actual result 13 cases from BOM readback (0/49 CLEAN PASS); legacy active-path atlas + Azure BUS-49–55 #43757–#43763 inventory; AgentMate pre-WCF reducer vs WCF mapper census; pilot cases 2/4/22 six-gate 0/3 CLEAN PASS EVIDENCE_PARTIAL; Case 1 KYP BOM TA2609235008 KYP_MISSING; Case 20 EK BOM; queue terminal coherence; webservice parity packet readback — read-only/Owner-authorized UAT, Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 9, 24),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Proof + Analysis: Sep-24 Revamp sprint Excel (4) snapshot + AS400 ref cases 2/4/20/21/22 + WL21 rider probe",
+        "Sep-24 — sync Test_Revamp_sprint (4).xlsm snapshot/manifest testcase-sheet-20260924; AS400 reference pack (TA2608185008 CRS/MEJ, TA2609155013 pass, TA2609235002 APD/EKA, TA2608315066 pass, TA2609235014 WL21 missing / WP-F ST5D3 rider fail readback); sprint case registry cleanPass 2/49; queue fix timesheet daily finalize without MSI review gate — read-only/Owner-authorized UAT, Activation NO-GO",
+    ),
 ]
