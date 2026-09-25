@@ -133,4 +133,11 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Proof + Analysis: Sep-24 Revamp sprint Excel (4) snapshot + AS400 ref cases 2/4/20/21/22 + WL21 rider probe",
         "Sep-24 — sync Test_Revamp_sprint (4).xlsm snapshot/manifest testcase-sheet-20260924; AS400 reference pack (TA2608185008 CRS/MEJ, TA2609155013 pass, TA2609235002 APD/EKA, TA2608315066 pass, TA2609235014 WL21 missing / WP-F ST5D3 rider fail readback); sprint case registry cleanPass 2/49; queue fix timesheet daily finalize without MSI review gate — read-only/Owner-authorized UAT, Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 9, 25),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Proof + Analysis: Sep-25 memo BOM draft batch + Case 9 F986 SSQ RCA + Tester Excel sync",
+        "Sep-25 — Invoke-SprintMemoCasesBomDraft cases 9/10/15/19/24 save-draft agent 00020022; TA2609255013 Case 9 ER root cause AS400 F986 Automatic Nums Exhausted (SSQ S2480 Action A) runbook fb342dba; SSQ log fetch 2026-09-25; daily report + queue closeout — read-only/Owner-authorized UAT, Activation NO-GO",
+    ),
 ]

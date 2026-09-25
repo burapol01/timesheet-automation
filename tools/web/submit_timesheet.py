@@ -143,7 +143,8 @@ def main() -> int:
     print(f"Source: {args.data}")
     print(f"Found {len(entries)} work entries ({args.sheet}, {fd} .. {td})")
     for e in entries:
-        print(f"  {e.event_date}: {e.remark[:80]}...")
+        preview = e.remark[:80].encode("ascii", "replace").decode("ascii")
+        print(f"  {e.event_date}: {preview}...")
     if args.dry_run:
         return 0
     return submit(entries, args)

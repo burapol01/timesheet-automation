@@ -33,11 +33,19 @@ class CalendarSession:
         return datetime.strptime(title, "%B %Y").date().replace(day=1)
 
     def ensure_month(self, target: date) -> None:
+        """Navigate calendar to target month.
+
+        Always re-read the DOM title — never trust ``visible_month`` alone.
+        SaveTimesheet / GetEvents often jumps the UI back to the current month
+        while the in-memory cache still says the previous month, which made
+        later days look "skipped" (cell not found on the wrong month view).
+        """
         target_month = target.replace(day=1)
-        if self.visible_month == target_month:
+        visible = self._read_visible_month()
+        if visible == target_month:
+            self.visible_month = target_month
             return
         guard = 0
-        visible = self._read_visible_month()
         while visible != target_month and guard < 24:
             if visible < target_month:
                 self.page.locator(".fc-next-button").click()
@@ -72,6 +80,12 @@ class CalendarSession:
         self.ensure_month(target)
         iso = target.isoformat()
         cell = self.page.locator(f'[data-date="{iso}"]').first
+        # Brief retry: GetEvents redraw can briefly detach day cells.
+        if cell.count() == 0:
+            self.visible_month = None
+            self.ensure_month(target)
+            self.page.wait_for_timeout(400)
+            cell = self.page.locator(f'[data-date="{iso}"]').first
         if cell.count():
             cell.click(force=True)
         else:
@@ -79,7 +93,10 @@ class CalendarSession:
                 ".fc-daygrid-day:not(.fc-day-other) .fc-daygrid-day-number"
             ).filter(has_text=str(target.day)).first
             if not day.count():
-                raise RuntimeError(f"Calendar cell not found for {iso}")
+                shown = self._read_visible_month().strftime("%B %Y")
+                raise RuntimeError(
+                    f"Calendar cell not found for {iso} (visible month is {shown})"
+                )
             day.click()
         self.page.wait_for_selector(".modal.in, .modal.show", state="visible", timeout=10_000)
         self.page.wait_for_selector(f".modal-title:has-text('{MODAL_TITLE}')", timeout=10_000)
@@ -150,6 +167,11 @@ class CalendarSession:
             )
         except Exception:
             self.page.wait_for_timeout(500)
+        # Save/GetEvents can reset the visible month; never trust the cache after refresh.
+        try:
+            self.visible_month = self._read_visible_month()
+        except Exception:
+            self.visible_month = None
 
 
 def ensure_edit_event_id(page: Page, event_id: int) -> None:

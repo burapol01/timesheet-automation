@@ -63,15 +63,7 @@ def _com_retry(fn, *, retries: int = 5, delay: float = 2.0):
     raise RuntimeError(f"Outlook COM failed: {last}")
 
 
-def create_outlook_draft(
-    mail: DraftMail,
-    *,
-    open_draft: bool = False,
-) -> None:
-    """Save mail to Outlook Drafts folder. Does not send."""
-    outlook = _com_retry(_outlook_application)
-    item = _com_retry(lambda: outlook.CreateItem(0))  # olMailItem
-
+def _populate_mail_item(mail: DraftMail, item) -> None:
     if mail.display_to:
         item.To = f"{mail.display_to} <{mail.to}>"
     else:
@@ -88,7 +80,25 @@ def create_outlook_draft(
             raise FileNotFoundError(f"ไม่พบไฟล์แนบ: {path}")
         item.Attachments.Add(str(path.resolve()))
 
+
+def create_outlook_draft(
+    mail: DraftMail,
+    *,
+    open_draft: bool = False,
+) -> None:
+    """Save mail to Outlook Drafts folder. Does not send."""
+    outlook = _com_retry(_outlook_application)
+    item = _com_retry(lambda: outlook.CreateItem(0))  # olMailItem
+    _populate_mail_item(mail, item)
     item.Save()
 
     if open_draft:
         item.Display()
+
+
+def send_outlook_mail(mail: DraftMail) -> None:
+    """Compose and send mail immediately via Outlook desktop."""
+    outlook = _com_retry(_outlook_application)
+    item = _com_retry(lambda: outlook.CreateItem(0))  # olMailItem
+    _populate_mail_item(mail, item)
+    _com_retry(item.Send)

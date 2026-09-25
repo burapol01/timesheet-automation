@@ -63,9 +63,8 @@ from email_templates import (  # noqa: E402
     subject_manager_review,
 
     subject_to_accounting,
-
+    subject_to_accounting_interim,
     subject_to_approver,
-
 )
 
 from outlook_draft import DraftMail, create_outlook_draft  # noqa: E402
@@ -340,7 +339,7 @@ def build_drafts(
 
                         cc="",
 
-                        subject=subject_to_accounting(month_en=month, year=year),
+                        subject=subject_to_accounting_interim(month_en=month, year=year),
 
                         body=body_to_accounting_interim(month_en=month, year=year),
 
@@ -436,8 +435,7 @@ def main() -> None:
 
         action="store_true",
 
-        help="Draft ชั่วคราวไป accounting — แนบ PDF ที่ Manager ลงนามแล้ว (รอ Approver ครบ)",
-
+        help="Draft ชั่วคราวไป accounting — แนบ PDF พนักงาน (ตรวจวันหยุด) ไม่ CC",
     )
 
     parser.add_argument("--dry-run", action="store_true")
@@ -498,7 +496,7 @@ def main() -> None:
 
                 year=args.year,
 
-                stage=PDF_STAGE_MANAGER_SIGNED,
+                stage=PDF_STAGE_EMPLOYEE,
 
             )
 

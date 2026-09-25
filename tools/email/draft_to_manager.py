@@ -22,7 +22,8 @@ sys.path.insert(0, str(ROOT / "lib"))
 
 from email_config import MANAGER_DISPLAY, MANAGER_EMAIL  # noqa: E402
 from email_templates import body_manager_review, subject_manager_review  # noqa: E402
-from outlook_draft import DraftMail, create_outlook_draft  # noqa: E402
+from outlook_draft import DraftMail, create_outlook_draft, send_outlook_mail  # noqa: E402
+from pdf_export import snapshot_for_draft  # noqa: E402
 from paths import DEFAULT_REPORT_YEAR, ensure_dirs  # noqa: E402
 from pdf_export import pdf_output_path, PDF_STATUS_PENDING  # noqa: E402
 
@@ -60,7 +61,15 @@ def main() -> None:
         action="store_true",
         help="เปิดหน้าต่าง draft ใน Outlook หลังบันทึก",
     )
+    parser.add_argument(
+        "--send",
+        action="store_true",
+        help="ส่งเมลทันที (ไม่บันทึก draft)",
+    )
     args = parser.parse_args()
+
+    if args.send and (args.dry_run or args.open):
+        parser.error("--send ใช้ร่วมกับ --dry-run หรือ --open ไม่ได้")
 
     ensure_dirs()
     pdf_path = resolve_pdf(month=args.month, year=args.year, pdf=args.pdf)
@@ -82,6 +91,17 @@ def main() -> None:
         print(f"Attach:  {pdf_path}")
         print("--- Body ---")
         print(mail.body.replace("\r\n", "\n"))
+        return
+
+    if args.send:
+        snap = snapshot_for_draft(
+            step="manager", month=args.month, year=args.year, source=pdf_path
+        )
+        mail.attachments = [snap]
+        send_outlook_mail(mail)
+        print("Sent to Manager:", MANAGER_EMAIL)
+        print("Subject:", mail.subject)
+        print("Attach:", snap.name)
         return
 
     create_outlook_draft(mail, open_draft=args.open)
