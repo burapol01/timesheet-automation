@@ -140,4 +140,12 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Proof + Analysis: Sep-25 memo BOM draft batch + Case 9 F986 SSQ RCA + Tester Excel sync",
         "Sep-25 — Invoke-SprintMemoCasesBomDraft cases 9/10/15/19/24 save-draft agent 00020022; TA2609255013 Case 9 ER root cause AS400 F986 Automatic Nums Exhausted (SSQ S2480 Action A) runbook fb342dba; SSQ log fetch 2026-09-25; daily report + queue closeout — read-only/Owner-authorized UAT, Activation NO-GO",
     ),
+    # advance — non-work 2026-09-26 (Saturday); document weekend queue/BOM work on next work day
+    ReportEntry(
+        date(2026, 9, 28),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Analysis + Proof: Sep-26 BOM 1–49 inventory/registry read-only + queue auto-finalize/router repair + VPN flow retry",
+        "Sep-26 (Saturday) — BOM case loop 1–49 HOLD_SANITIZATION; BOM registry fingerprint read-only; Revamp draft inventory + agent-owned OLAE correction (245 refs); BOM tool agent 00020022 readonly; queue auto-finalize loop + autonomous router repair PASS; Windows UI bridge publish; VPN flow retry route OK; main mission flow smoke — read-only/VERIFY_ONLY, Activation NO-GO",
+    ),
 ]
