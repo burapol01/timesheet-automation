@@ -140,12 +140,12 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Proof + Analysis: Sep-25 memo BOM draft batch + Case 9 F986 SSQ RCA + Tester Excel sync",
         "Sep-25 — Invoke-SprintMemoCasesBomDraft cases 9/10/15/19/24 save-draft agent 00020022; TA2609255013 Case 9 ER root cause AS400 F986 Automatic Nums Exhausted (SSQ S2480 Action A) runbook fb342dba; SSQ log fetch 2026-09-25; daily report + queue closeout — read-only/Owner-authorized UAT, Activation NO-GO",
     ),
-    # advance — non-work 2026-09-26/27 (Sat/Sun); weekend BOM/queue work → next work day 2026-09-28
+    # Mon 2026-09-28 — weekend spillover (Sat/Sun) + same-day queue BOM Case9/wave1
     ReportEntry(
         date(2026, 9, 28),
         ATTENDANCE_WORK,
         "FTRV033",
-        "Documentation + Analysis + Proof: Sep-26–27 BOM DR/Case33 read-only gates + queue finalize repair",
-        "Sep-26 — BOM case loop 1–49 HOLD_SANITIZATION; registry fingerprint; Revamp draft inventory + OLAE correction (245 refs); agent 00020022 readonly; queue auto-finalize/router repair; UI bridge publish; VPN flow retry. Sep-27 (Sunday) — BOM DR complete overnight (memo cohort SaveAction, tool repair); Case 33 readonly chain (executable profile, fresh fixture offline, envelope/eight fields, probe projection, saved-ref exposure, copied-field containment, open-source/UAT schema rate, PV2113 safety, min-SA lineage HOLD); five SaveAction readback; Case 9 independent input audit — read-only/VERIFY_ONLY, Activation NO-GO",
+        "Documentation + Analysis + Proof: Sep-26–28 BOM DR/Case33/Case9 + wave1 AS400 + WL parity handoff",
+        "Sep-26 — BOM case loop 1–49 HOLD_SANITIZATION; registry fingerprint; Revamp draft inventory + OLAE correction; agent 00020022 readonly; queue auto-finalize/router repair; UI bridge; VPN flow retry. Sep-27 — BOM DR complete overnight (memo cohort SaveAction, tool repair); Case 33 readonly chain (executable profile, fresh fixture, envelope/eight fields, probe projection, saved-ref, copied-field containment, open-source/UAT schema rate, PV2113 safety, min-SA lineage HOLD); five SaveAction readback; Case 9 independent input audit. Sep-28 — Case 9 Tester Excel→Expected HOLD; postsubmit SSQ/F RCA TA2609265002 ER; create SSQ leg + insured ID validation CONFIRMED; BOM pilot wave1 AS400 3/3 attempts 0 AS400_CONFIRMED safety HOLD; WL base plan code parity handoff (feature/sub-wl) — VERIFY_ONLY, Activation NO-GO",
     ),
 ]
