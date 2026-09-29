@@ -155,4 +155,11 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Proof: Sep-29 Tester Excel sync + Work Tracker registry + Case 48 terminal evidence",
         "Sep-29 — downloaded latest Tester Excel from SharePoint; validated Cases 1–49; sanitized registry updated with Passed 8/49, Failed 3, In Queue 29, Ready for Test 6, Dropped 3; Case 48 TA2609295002 provisional pass with expected EKA/EKP memo set; Work Tracker smoke baseline failure remains unrelated Worker health-tab assertion; no DB/Submit/Worker/SSQ/AS400/deploy/runtime action, Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 9, 30),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Planning + Readiness: Sep-30 Tester/BOM execution plan from latest 49-case workbook",
+        "Sep-30 — reviewed latest Tester plan: Passed 8/49, Failed 3, In Queue 29, Ready for Test 6, Dropped 3; Case 48 TA2609295002 expected EKA/EKP matched but remains provisional pending Owner closure; next BOM plan prioritizes failed-case investigation and one-by-one ready/queued execution with same-attempt evidence, improving UAT readiness without unsupported closure; no DB/Submit/Worker/SSQ/AS400/deploy/runtime action, Activation NO-GO",
+    ),
 ]

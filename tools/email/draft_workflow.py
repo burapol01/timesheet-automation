@@ -277,7 +277,7 @@ def build_drafts(
 
                     to=MANAGER_EMAIL,
 
-                    cc="",
+                    cc=ACCOUNTING_CC,
 
                     subject=subject_mgr,
 
