@@ -148,4 +148,11 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         "Documentation + Analysis + Proof: Sep-26–28 BOM DR/Case33/Case9 + wave1 AS400 + WL parity handoff",
         "Sep-26 — BOM case loop 1–49 HOLD_SANITIZATION; registry fingerprint; Revamp draft inventory + OLAE correction; agent 00020022 readonly; queue auto-finalize/router repair; UI bridge; VPN flow retry. Sep-27 — BOM DR complete overnight (memo cohort SaveAction, tool repair); Case 33 readonly chain (executable profile, fresh fixture, envelope/eight fields, probe projection, saved-ref, copied-field containment, open-source/UAT schema rate, PV2113 safety, min-SA lineage HOLD); five SaveAction readback; Case 9 independent input audit. Sep-28 — Case 9 Tester Excel→Expected HOLD; postsubmit SSQ/F RCA TA2609265002 ER; create SSQ leg + insured ID validation CONFIRMED; BOM pilot wave1 AS400 3/3 attempts 0 AS400_CONFIRMED safety HOLD; WL base plan code parity handoff (feature/sub-wl) — VERIFY_ONLY, Activation NO-GO",
     ),
+    ReportEntry(
+        date(2026, 9, 29),
+        ATTENDANCE_WORK,
+        "FTRV033",
+        "Documentation + Proof: Sep-29 Tester Excel sync + Work Tracker registry + Case 48 terminal evidence",
+        "Sep-29 — downloaded latest Tester Excel from SharePoint; validated Cases 1–49; sanitized registry updated with Passed 8/49, Failed 3, In Queue 29, Ready for Test 6, Dropped 3; Case 48 TA2609295002 provisional pass with expected EKA/EKP memo set; Work Tracker smoke baseline failure remains unrelated Worker health-tab assertion; no DB/Submit/Worker/SSQ/AS400/deploy/runtime action, Activation NO-GO",
+    ),
 ]
