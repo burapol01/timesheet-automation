@@ -159,7 +159,7 @@ SEPTEMBER_2026_ENTRIES: list[ReportEntry] = [
         date(2026, 9, 30),
         ATTENDANCE_WORK,
         "FTRV033",
-        "Planning + Readiness: Sep-30 Tester/BOM execution plan from latest 49-case workbook",
-        "Sep-30 — reviewed latest Tester plan: Passed 8/49, Failed 3, In Queue 29, Ready for Test 6, Dropped 3; Case 48 TA2609295002 expected EKA/EKP matched but remains provisional pending Owner closure; next BOM plan prioritizes failed-case investigation and one-by-one ready/queued execution with same-attempt evidence, improving UAT readiness without unsupported closure; no DB/Submit/Worker/SSQ/AS400/deploy/runtime action, Activation NO-GO",
+        "Documentation + Planning: Sep-30 Tester registry/plugin + Windows queue lifecycle",
+        "Sep-30 — synced latest Tester Excel into Work Tracker registry (Passed 8/49, Failed 3, In Queue 29, Ready for Test 6, Dropped 3); Case 1 TA2609295015 and Case 48 TA2609245026 policy alignment; plugin case-board Passed filter; afternoon queue docs: merge-recovery completion gate, four-lane lifecycle reconcile, BOM deployed-proof debate handoffs, Cursor transport/wake hardening; PAY memo parity note; no DB/Submit/Worker/SSQ/AS400/deploy/runtime action, Activation NO-GO",
     ),
 ]
